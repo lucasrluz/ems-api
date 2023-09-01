@@ -1,4 +1,4 @@
-package com.emsapi.integration.user;
+package com.emsapi.integration.api.user;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
