@@ -8,7 +8,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public abstract class UserModelBuilder {
     public static UserModel createWithEmptyUserId() {
-        return new UserModel("foo", "bar", "foobar@gmail.com", "123");
+        return new UserModel("foo", "bar", "foobar@gmail.com", BCrypt.withDefaults().hashToString(12, "123".toCharArray()));
     }
 
     public static UserModel createWithUserId() {
