@@ -1,10 +1,12 @@
 package com.emsapi.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.emsapi.domains.UserDomain;
+import com.emsapi.dtos.GetUserDTOResponse;
 import com.emsapi.dtos.SignUpDTORequest;
 import com.emsapi.dtos.SignUpDTOResponse;
 import com.emsapi.models.UserModel;
@@ -45,5 +47,16 @@ public class UserService {
         UserModel saveUserModel = this.userRepository.save(userModel);
 
         return new SignUpDTOResponse(saveUserModel.getUserId().toString());
+    }
+
+    public GetUserDTOResponse get(String userId) {
+        UserModel getUserModel = this.userRepository.findById(UUID.fromString(userId)).get();
+
+        return new GetUserDTOResponse(
+            getUserModel.getUserId().toString(),
+            getUserModel.getFirstName(),
+            getUserModel.getLastName(),
+            getUserModel.getEmail()
+        );
     }
 }
