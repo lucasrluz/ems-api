@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.emsapi.dtos.GetUserDTOResponse;
 import com.emsapi.dtos.SignUpDTORequest;
 import com.emsapi.dtos.SignUpDTOResponse;
+import com.emsapi.dtos.UpdateUserDTORequest;
+import com.emsapi.dtos.UpdateUserDTOResponse;
 import com.emsapi.services.UserService;
 
 @RestController
@@ -40,5 +43,18 @@ public class UserController {
         GetUserDTOResponse getUserDTOResponse = this.userService.get(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(getUserDTOResponse);
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> update(@RequestBody UpdateUserDTORequest updateUserDTORequest, Authentication authentication) {
+        try {
+            String userId = authentication.getName();
+
+            UpdateUserDTOResponse updateUserDTOResponse = this.userService.update(updateUserDTORequest, userId);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(updateUserDTOResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
     }
 }
