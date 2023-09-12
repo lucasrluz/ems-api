@@ -9,6 +9,8 @@ import com.emsapi.domains.UserDomain;
 import com.emsapi.dtos.GetUserDTOResponse;
 import com.emsapi.dtos.SignUpDTORequest;
 import com.emsapi.dtos.SignUpDTOResponse;
+import com.emsapi.dtos.UpdateUserDTORequest;
+import com.emsapi.dtos.UpdateUserDTOResponse;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.EmailAlreadyRegisteredException;
@@ -58,5 +60,28 @@ public class UserService {
             getUserModel.getLastName(),
             getUserModel.getEmail()
         );
+    }
+
+    public UpdateUserDTOResponse update(UpdateUserDTORequest updateUserDTORequest, String userId) throws Exception {
+        UserModel findUserModel = this.userRepository.findById(UUID.fromString(userId)).get();
+
+        UserDomain userDomain = UserDomain.validate(
+            updateUserDTORequest.getFirstName(),
+            updateUserDTORequest.getLastName(),
+            findUserModel.getEmail(),
+            findUserModel.getPassword()
+        );
+
+        UserModel userModel = new UserModel(
+            UUID.fromString(userId),
+            userDomain.getFirstName(),
+            userDomain.getLastName(),
+            userDomain.getEmail(),
+            userDomain.getPassword()
+        );
+
+        UserModel saveUserModel = this.userRepository.save(userModel);
+
+        return new UpdateUserDTOResponse(saveUserModel.getUserId().toString());
     }
 }
