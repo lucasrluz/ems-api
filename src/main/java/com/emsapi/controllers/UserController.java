@@ -3,6 +3,7 @@ package com.emsapi.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emsapi.dtos.DeleteUserDTOResponse;
 import com.emsapi.dtos.GetUserDTOResponse;
 import com.emsapi.dtos.SignUpDTORequest;
 import com.emsapi.dtos.SignUpDTOResponse;
@@ -56,5 +58,14 @@ public class UserController {
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> delete(Authentication authentication) {
+        String userId = authentication.getName();
+
+        DeleteUserDTOResponse deleteUserDTOResponse = this.userService.delete(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(deleteUserDTOResponse);
     }
 }
