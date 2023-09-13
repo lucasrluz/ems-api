@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.emsapi.domains.UserDomain;
+import com.emsapi.dtos.DeleteUserDTOResponse;
 import com.emsapi.dtos.GetUserDTOResponse;
 import com.emsapi.dtos.SignUpDTORequest;
 import com.emsapi.dtos.SignUpDTOResponse;
@@ -83,5 +84,11 @@ public class UserService {
         UserModel saveUserModel = this.userRepository.save(userModel);
 
         return new UpdateUserDTOResponse(saveUserModel.getUserId().toString());
+    }
+
+    public DeleteUserDTOResponse delete(String userId) {
+        this.userRepository.deleteById(UUID.fromString(userId));
+
+        return new DeleteUserDTOResponse(userId);
     }
 }
