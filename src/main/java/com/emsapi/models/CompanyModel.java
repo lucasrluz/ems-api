@@ -30,15 +30,17 @@ public class CompanyModel {
 
     public CompanyModel() {}
 
-    public CompanyModel(String name, String description) {
+    public CompanyModel(String name, String description, UserModel userModel) {
         this.name = name;
         this.description = description;
+        this.userModel = userModel;
     }
 
-    public CompanyModel(UUID companyId, String name, String description) {
+    public CompanyModel(UUID companyId, String name, String description, UserModel userModel) {
         this.companyId = companyId;
         this.name = name;
         this.description = description;
+        this.userModel = userModel;
     }
 
     public UUID getCompanyId() {
@@ -63,5 +65,13 @@ public class CompanyModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UserModel getUserModel() {
+        return userModel;
+    }
+
+    public void setUserModel(UserModel userModel) {
+        this.userModel = userModel;
     }
 }
