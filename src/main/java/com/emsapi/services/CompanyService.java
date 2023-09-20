@@ -10,12 +10,14 @@ import org.springframework.stereotype.Service;
 import com.emsapi.domains.CompanyDomain;
 import com.emsapi.domains.util.InvalidCompanyDomainException;
 import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
+import com.emsapi.dtos.company.GetCompanyDTOResponse;
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
 import com.emsapi.dtos.company.SaveCompanyDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.UserRepository;
+import com.emsapi.services.util.CompanyNotFoundException;
 
 @Service
 public class CompanyService {
@@ -64,5 +66,25 @@ public class CompanyService {
         });
 
         return getAllCompanyDTOResponse;
+    }
+
+    public GetCompanyDTOResponse get(String companyId, String userId) throws CompanyNotFoundException {
+        Optional<UserModel> findUser = this.userRepository.findById(UUID.fromString(userId));
+        
+        Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));
+
+        if (companyModel.isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+
+        if (!companyModel.get().getUserModel().equals(findUser.get())) {
+            throw new CompanyNotFoundException();
+        }
+
+        return new GetCompanyDTOResponse(
+            companyModel.get().getCompanyId().toString(),
+            companyModel.get().getName(),
+            companyModel.get().getDescription()
+        );
     }
 }
