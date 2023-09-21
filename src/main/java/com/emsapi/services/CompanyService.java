@@ -13,6 +13,8 @@ import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
 import com.emsapi.dtos.company.SaveCompanyDTOResponse;
+import com.emsapi.dtos.company.UpdateCompanyDTORequest;
+import com.emsapi.dtos.company.UpdateCompanyDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
@@ -86,5 +88,23 @@ public class CompanyService {
             companyModel.get().getName(),
             companyModel.get().getDescription()
         );
+    }
+
+    public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest, String companyId, String userId) throws CompanyNotFoundException, InvalidCompanyDomainException {
+        Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
+
+        if (findCompanyModel.isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+
+        CompanyDomain companyDomain = CompanyDomain.validate(updateCompanyDTORequest.getName(), updateCompanyDTORequest.getDescription());
+        
+        Optional<UserModel> userModel = this.userRepository.findById(UUID.fromString(userId));
+
+        CompanyModel companyModel = new CompanyModel(UUID.fromString(companyId), companyDomain.getName(), companyDomain.getDescription(), userModel.get());
+    
+        CompanyModel updateCompanyModel = this.companyRepository.save(companyModel);
+
+        return new UpdateCompanyDTOResponse(updateCompanyModel.getCompanyId().toString());
     }
 }
