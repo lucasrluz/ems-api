@@ -9,4 +9,8 @@ public abstract class CompanyModelBuilder {
     public static CompanyModel createWithCompanyId(UserModel userModel) {
         return new CompanyModel(UUID.randomUUID(), "foo", "bar", userModel);
     }
+
+    public static CompanyModel createWithEmptyCompanyId(UserModel userModel) {
+        return new CompanyModel("foo", "bar", userModel);
+    }
 }
