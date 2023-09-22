@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.emsapi.dtos.SignInDTORequest;
-import com.emsapi.dtos.SignInDTOResponse;
+import com.emsapi.dtos.authentication.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTOResponse;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.EmailOrPasswordInvalidException;

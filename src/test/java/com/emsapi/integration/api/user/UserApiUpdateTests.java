@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.emsapi.dtos.UpdateUserDTORequest;
+import com.emsapi.dtos.user.UpdateUserDTORequest;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;

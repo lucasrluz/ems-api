@@ -1,4 +1,4 @@
-package com.emsapi.dtos;
+package com.emsapi.dtos.authentication;
 
 public class SignUpDTOResponse {
     private String userId;

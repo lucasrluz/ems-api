@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.emsapi.dtos.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTORequest;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;

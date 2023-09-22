@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.emsapi.dtos.DeleteUserDTOResponse;
-import com.emsapi.dtos.GetUserDTOResponse;
-import com.emsapi.dtos.SignUpDTORequest;
-import com.emsapi.dtos.SignUpDTOResponse;
-import com.emsapi.dtos.UpdateUserDTORequest;
-import com.emsapi.dtos.UpdateUserDTOResponse;
+import com.emsapi.dtos.authentication.SignUpDTORequest;
+import com.emsapi.dtos.authentication.SignUpDTOResponse;
+import com.emsapi.dtos.user.DeleteUserDTOResponse;
+import com.emsapi.dtos.user.GetUserDTOResponse;
+import com.emsapi.dtos.user.UpdateUserDTORequest;
+import com.emsapi.dtos.user.UpdateUserDTOResponse;
 import com.emsapi.services.UserService;
 
 @RestController

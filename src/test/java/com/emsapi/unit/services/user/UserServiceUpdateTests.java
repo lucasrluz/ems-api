@@ -13,8 +13,8 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.emsapi.domains.util.InvalidUserDomainException;
-import com.emsapi.dtos.UpdateUserDTORequest;
-import com.emsapi.dtos.UpdateUserDTOResponse;
+import com.emsapi.dtos.user.UpdateUserDTORequest;
+import com.emsapi.dtos.user.UpdateUserDTOResponse;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.UserService;

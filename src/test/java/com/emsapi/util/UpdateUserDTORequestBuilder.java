@@ -1,6 +1,6 @@
 package com.emsapi.util;
 
-import com.emsapi.dtos.UpdateUserDTORequest;
+import com.emsapi.dtos.user.UpdateUserDTORequest;
 
 public abstract class UpdateUserDTORequestBuilder {
     public static UpdateUserDTORequest createWithValidData() {

@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.emsapi.dtos.SignUpDTORequest;
-import com.emsapi.dtos.SignUpDTOResponse;
+import com.emsapi.dtos.authentication.SignUpDTORequest;
+import com.emsapi.dtos.authentication.SignUpDTOResponse;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.UserService;

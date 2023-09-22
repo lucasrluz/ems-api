@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.emsapi.dtos.SignInDTORequest;
-import com.emsapi.dtos.SignInDTOResponse;
+import com.emsapi.dtos.authentication.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTOResponse;
 import com.emsapi.services.AuthenticationService;
 
 @RestController

@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.emsapi.dtos.DeleteUserDTOResponse;
+import com.emsapi.dtos.user.DeleteUserDTOResponse;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.UserService;
 

@@ -12,8 +12,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import com.emsapi.dtos.SignInDTORequest;
-import com.emsapi.dtos.SignInDTOResponse;
+
+import com.emsapi.dtos.authentication.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTOResponse;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.AuthenticationService;

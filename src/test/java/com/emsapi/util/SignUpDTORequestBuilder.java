@@ -1,6 +1,6 @@
 package com.emsapi.util;
 
-import com.emsapi.dtos.SignUpDTORequest;
+import com.emsapi.dtos.authentication.SignUpDTORequest;
 
 public abstract class SignUpDTORequestBuilder {
     public static SignUpDTORequest createWithValidData() {

@@ -15,7 +15,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import com.emsapi.dtos.SignUpDTORequest;
+
+import com.emsapi.dtos.authentication.SignUpDTORequest;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.util.SignUpDTORequestBuilder;

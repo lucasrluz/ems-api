@@ -1,4 +1,4 @@
-package com.emsapi.dtos;
+package com.emsapi.dtos.user;
 
 public class DeleteUserDTOResponse {
     private String userId;

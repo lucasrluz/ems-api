@@ -1,4 +1,4 @@
-package com.emsapi.dtos;
+package com.emsapi.dtos.authentication;
 
 public class SignInDTOResponse {
     private String jwt;
