@@ -8,15 +8,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emsapi.domains.util.InvalidCompanyDomainException;
 import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
 import com.emsapi.dtos.company.SaveCompanyDTOResponse;
+import com.emsapi.dtos.company.UpdateCompanyDTORequest;
+import com.emsapi.dtos.company.UpdateCompanyDTOResponse;
 import com.emsapi.services.CompanyService;
+import com.emsapi.services.util.CompanyNotFoundException;
 
 @RestController
 @RequestMapping("/api/company")
@@ -59,6 +64,21 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.OK).body(getCompanyDTOResponse);
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @PutMapping("/{companyId}")
+    public ResponseEntity<Object> update(@PathVariable String companyId, @RequestBody UpdateCompanyDTORequest updateCompanyDTORequest, Authentication authentication) {
+        try {
+            String userId = authentication.getName();
+
+            UpdateCompanyDTOResponse updateCompanyDTOResponse = this.companyService.update(updateCompanyDTORequest, companyId, userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(updateCompanyDTOResponse);
+        } catch (CompanyNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        } catch (InvalidCompanyDomainException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 }
