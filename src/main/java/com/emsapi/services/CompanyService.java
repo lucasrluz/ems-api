@@ -91,17 +91,21 @@ public class CompanyService {
     }
 
     public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest, String companyId, String userId) throws CompanyNotFoundException, InvalidCompanyDomainException {
+        CompanyDomain companyDomain = CompanyDomain.validate(updateCompanyDTORequest.getName(), updateCompanyDTORequest.getDescription());
+        
         Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
-
+        
         if (findCompanyModel.isEmpty()) {
             throw new CompanyNotFoundException();
         }
 
-        CompanyDomain companyDomain = CompanyDomain.validate(updateCompanyDTORequest.getName(), updateCompanyDTORequest.getDescription());
+        Optional<UserModel> findUserModel = this.userRepository.findById(UUID.fromString(userId));
         
-        Optional<UserModel> userModel = this.userRepository.findById(UUID.fromString(userId));
+        if (!findCompanyModel.get().getUserModel().equals(findUserModel.get())) {
+            throw new CompanyNotFoundException();
+        }
 
-        CompanyModel companyModel = new CompanyModel(UUID.fromString(companyId), companyDomain.getName(), companyDomain.getDescription(), userModel.get());
+        CompanyModel companyModel = new CompanyModel(UUID.fromString(companyId), companyDomain.getName(), companyDomain.getDescription(), findUserModel.get());
     
         CompanyModel updateCompanyModel = this.companyRepository.save(companyModel);
 

@@ -76,4 +76,28 @@ public class CompanyServiceUpdateTests {
         .isThrownBy(() -> this.companyService.update(updateCompanyDTORequest, UUID.randomUUID().toString(), UUID.randomUUID().toString()))
         .withMessage("Company not found");
     }
+
+    @Test
+    public void retornaException_CompanyNaoEncontrada_UsuarioDiferenteDoInformado() throws Exception {
+        // Mocks
+        UserModel userModelForCompanyModel = UserModelBuilder.createWithUserId();
+        Optional<CompanyModel> companyModelOptionalMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModelForCompanyModel));
+        BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelOptionalMock);
+        
+        Optional<UserModel> userModeOptionalMock = Optional.of(UserModelBuilder.createWithUserId());
+        BDDMockito.when(this.userRepository.findById(ArgumentMatchers.any())).thenReturn(userModeOptionalMock);
+
+        CompanyModel companyModel = CompanyModelBuilder.createWithEmptyCompanyId(userModelForCompanyModel);
+        companyModel.setCompanyId(companyModelOptionalMock.get().getCompanyId());
+        companyModel.setName("bar");
+        companyModel.setDescription("foo");
+        BDDMockito.when(this.companyRepository.save(ArgumentMatchers.any())).thenReturn(companyModel);
+        
+        // Test
+        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo");
+
+        assertThatExceptionOfType(CompanyNotFoundException.class)
+        .isThrownBy(() -> this.companyService.update(updateCompanyDTORequest, companyModelOptionalMock.get().getCompanyId().toString(), userModeOptionalMock.get().getUserId().toString()))
+        .withMessage("Company not found");
+    }
 }
