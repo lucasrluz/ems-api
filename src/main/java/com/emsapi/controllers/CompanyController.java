@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.emsapi.domains.util.InvalidCompanyDomainException;
+import com.emsapi.dtos.company.DeleteCompanyDTOResponse;
 import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
@@ -79,6 +81,19 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         } catch (InvalidCompanyDomainException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{companyId}")
+    public ResponseEntity<Object> delete(@PathVariable String companyId, Authentication authentication) {
+        try {
+            String userId = authentication.getName();
+
+            DeleteCompanyDTOResponse deleteCompanyDTOResponse = this.companyService.delete(companyId, userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(deleteCompanyDTOResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
 }
