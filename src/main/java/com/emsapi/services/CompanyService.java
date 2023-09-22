@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.emsapi.domains.CompanyDomain;
 import com.emsapi.domains.util.InvalidCompanyDomainException;
+import com.emsapi.dtos.company.DeleteCompanyDTOResponse;
 import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
@@ -110,5 +111,23 @@ public class CompanyService {
         CompanyModel updateCompanyModel = this.companyRepository.save(companyModel);
 
         return new UpdateCompanyDTOResponse(updateCompanyModel.getCompanyId().toString());
+    }
+
+    public DeleteCompanyDTOResponse delete(String companyId, String userId) throws CompanyNotFoundException {
+        Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));
+        
+        if (companyModel.isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+        
+        Optional<UserModel> findUser = this.userRepository.findById(UUID.fromString(userId));
+        
+        if (!companyModel.get().getUserModel().equals(findUser.get())) {
+            throw new CompanyNotFoundException();
+        }
+
+        this.companyRepository.deleteById(UUID.fromString(companyId));
+
+        return new DeleteCompanyDTOResponse(companyId);
     }
 }
