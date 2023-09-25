@@ -64,7 +64,7 @@ public class CompanyServiceUpdateTests {
     }
 
     @Test
-    public void retornaException_CompanyNaoEncontrada() throws Exception {
+    public void retornaException_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
         // Mocks
         Optional<CompanyModel> companyModelOptionalMock = Optional.empty();
         BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelOptionalMock);
@@ -78,7 +78,7 @@ public class CompanyServiceUpdateTests {
     }
 
     @Test
-    public void retornaException_CompanyNaoEncontrada_UsuarioDiferenteDoInformado() throws Exception {
+    public void retornaException_CompanyNaoEncontrada_UsuarioDaCompanyDiferenteDoInformado() throws Exception {
         // Mocks
         UserModel userModelForCompanyModel = UserModelBuilder.createWithUserId();
         Optional<CompanyModel> companyModelOptionalMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModelForCompanyModel));

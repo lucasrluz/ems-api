@@ -48,7 +48,7 @@ public class UserApiGetTests {
     }
 
     @Test
-    public void retornaInformacoesDoUsuario() throws Exception {
+    public void retornaUser() throws Exception {
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
         
         String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());

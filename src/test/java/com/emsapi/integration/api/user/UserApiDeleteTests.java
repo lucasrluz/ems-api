@@ -51,7 +51,7 @@ public class UserApiDeleteTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus200EUserId() throws Exception {
+    public void retorna200EUserId() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
         

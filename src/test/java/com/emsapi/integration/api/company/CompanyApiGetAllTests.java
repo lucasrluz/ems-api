@@ -57,7 +57,7 @@ public class CompanyApiGetAllTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus200EListaComCompanys() throws Exception {
+    public void retorna200EListaComCompanys() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -85,7 +85,7 @@ public class CompanyApiGetAllTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus200EListaVazia() throws Exception {
+    public void retorna200EListaVazia_NenhumaCompanyCadastrada() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 

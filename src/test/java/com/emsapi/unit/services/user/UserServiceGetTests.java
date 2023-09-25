@@ -26,7 +26,7 @@ public class UserServiceGetTests {
     private UserRepository userRepository;
 
     @Test
-    public void retornaInformacoesDoUsuario() throws Exception {
+    public void retornaUser() throws Exception {
         Optional<UserModel> userModelOptionalMock = Optional.of(UserModelBuilder.createWithUserId());
         BDDMockito.when(this.userRepository.findById(ArgumentMatchers.any())).thenReturn(userModelOptionalMock);
 

@@ -50,7 +50,7 @@ public class CompanyApiDeleteTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus200ECompanyId() throws Exception {
+    public void retorna200ECompanyId() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -74,7 +74,7 @@ public class CompanyApiDeleteTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus404EMensagemDeErro_CompanyNaoCadastrada() throws Exception {
+    public void retorna404EMensagemDeErro_CompanyNaoCadastrada() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -91,7 +91,7 @@ public class CompanyApiDeleteTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus404EMensagemDeErro_UsuarioDiferenteDoInformado() throws Exception {
+    public void retorna404EMensagemDeErro_UserDaCompanyDiferenteDoInformado() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
         String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());

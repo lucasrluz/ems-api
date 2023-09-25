@@ -66,7 +66,7 @@ public class CompanyServiceGetAllTests {
     }
 
     @Test
-    public void retornaListaVazia() {
+    public void retornaListaVazia_NenhumaCompanyCadastrada() {
         // Mocks
         Optional<UserModel> userModelOptionalMock = Optional.of(UserModelBuilder.createWithUserId());
         BDDMockito.when(this.userRepository.findById(ArgumentMatchers.any())).thenReturn(userModelOptionalMock);

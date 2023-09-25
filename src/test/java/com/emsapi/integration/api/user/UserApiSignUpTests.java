@@ -50,7 +50,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus201EUserId() throws Exception {
+    public void retorna201EUserId() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithValidData();
 
@@ -82,7 +82,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_EmailJaCadastrado() throws Exception {
+    public void retorna400EMensagemDeErro_EmailJaCadastrado() throws Exception {
         //
         this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
         
@@ -101,7 +101,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_FistNameInvalido_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_FistNameInvalido_ValorVazio() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithEmptyFirstName();
 
@@ -117,7 +117,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_LastNameInvalido_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_LastNameInvalido_ValorVazio() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithEmptyLastName();
 
@@ -133,7 +133,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_EmailInvalido_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_EmailInvalido_ValorVazio() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithEmptyEmail();
 
@@ -149,7 +149,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_EmailInvalido_FormatoInvalido() throws Exception {
+    public void retorna400EMensagemDeErro_EmailInvalido_FormatoInvalido() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithInvalidEmailFormat();
 
@@ -165,7 +165,7 @@ public class UserApiSignUpTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_PasswordInvalida_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_PasswordInvalida_ValorVazio() throws Exception {
         // Request
         SignUpDTORequest signUpDTORequest = SignUpDTORequestBuilder.createWithEmpyPassword();
 

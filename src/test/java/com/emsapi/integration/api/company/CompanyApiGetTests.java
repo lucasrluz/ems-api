@@ -57,7 +57,7 @@ public class CompanyApiGetTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus200EInformacoesDaCompany() throws Exception {
+    public void retorna200ECompany() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -83,7 +83,7 @@ public class CompanyApiGetTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus404EMensagemDeErro_CompanyNaoCadastrada() throws Exception {
+    public void retorna404EMensagemDeErro_CompanyNaoCadastrada() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -102,7 +102,7 @@ public class CompanyApiGetTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus404EMensagemDeErro_UserIdDiferenteDoInformado() throws Exception {
+    public void retorna404EMensagemDeErro_UserDaCompanyDiferenteDoInformado() throws Exception {
         // Environment data
         UserModel userModelForUserId = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 

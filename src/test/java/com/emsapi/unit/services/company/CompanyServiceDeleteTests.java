@@ -66,7 +66,7 @@ public class CompanyServiceDeleteTests {
     }
 
     @Test
-    public void retornaException_CompanyNaoEncontrada_UsuarioDiferenteDoInformado() throws Exception {
+    public void retornaException_CompanyNaoEncontrada_UserDaCompanyDiferenteDoInformado() throws Exception {
         // Mocks
         UserModel userModeOptionalForCompanyModel = UserModelBuilder.createWithUserId();
         Optional<CompanyModel> companyModelOptionalMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModeOptionalForCompanyModel));

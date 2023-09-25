@@ -70,7 +70,7 @@ public class CompanyServiceGetTests {
     }
 
     @Test
-    public void retornaException_CompanyNaoEncontrada_UserIdDiferenteDoInformado() throws Exception {
+    public void retornaException_CompanyNaoEncontrada_UserDaCompanyDiferenteDoInformado() throws Exception {
         // Mocks
         Optional<UserModel> userModelOptionalMock = Optional.of(UserModelBuilder.createWithUserId());
         BDDMockito.when(this.userRepository.findById(ArgumentMatchers.any())).thenReturn(userModelOptionalMock);

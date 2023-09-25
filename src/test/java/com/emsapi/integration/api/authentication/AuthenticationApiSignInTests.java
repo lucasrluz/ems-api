@@ -50,7 +50,7 @@ public class AuthenticationApiSignInTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus201EJWT() throws Exception {
+    public void retorna201EJWT() throws Exception {
         // Environment data
         UserModel userModel = UserModelBuilder.createWithEmptyUserId();
         UserModel saveUserModel = this.userRepository.save(userModel);
@@ -72,7 +72,7 @@ public class AuthenticationApiSignInTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_EmailNaoCadastrado() throws Exception {
+    public void retorna400EMensagemDeErro_EmailNaoCadastrado() throws Exception {
         // Test
         SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
 
@@ -87,7 +87,7 @@ public class AuthenticationApiSignInTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_PasswordInvalida() throws Exception {
+    public void retorna400EMensagemDeErro_PasswordInvalida() throws Exception {
         // Environment data
         UserModel userModel = UserModelBuilder.createWithEmptyUserId();
         this.userRepository.save(userModel);

@@ -60,7 +60,7 @@ public class CompanyApiSaveTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus201ECompanyId() throws Exception {
+    public void retorna201ECompanyId() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -88,7 +88,7 @@ public class CompanyApiSaveTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_NameInvalido_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_NameInvalido_ValorVazio() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -109,7 +109,7 @@ public class CompanyApiSaveTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_DescriptionInvalida_ValorVazio() throws Exception {
+    public void retorna400EMensagemDeErro_DescriptionInvalida_ValorVazio() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 

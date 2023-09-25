@@ -54,7 +54,7 @@ public class UserApiUpdateTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus201EUserId() throws Exception {
+    public void retorna201EUserId() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -84,7 +84,7 @@ public class UserApiUpdateTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_FirstNameInvalido() throws Exception {
+    public void retorna400EMensagemDeErro_FirstNameInvalido() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 
@@ -105,7 +105,7 @@ public class UserApiUpdateTests {
     }
 
     @Test
-    public void retornaCodigoDeStatus400EMensagemDeErro_LastNameInvalido() throws Exception {
+    public void retorna400EMensagemDeErro_LastNameInvalido() throws Exception {
         // Environment data
         UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
 

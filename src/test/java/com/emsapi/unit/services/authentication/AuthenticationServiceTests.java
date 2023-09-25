@@ -52,7 +52,7 @@ public class AuthenticationServiceTests {
     }
 
     @Test
-    public void retornaException_EmailInvalido() throws Exception {
+    public void retornaException_EmailInvalido_EmailNaoCadastrado() throws Exception {
         // Mock
         BDDMockito.when(this.userRepository.findByEmail(ArgumentMatchers.any())).thenReturn(Optional.empty());
 
@@ -65,7 +65,7 @@ public class AuthenticationServiceTests {
     }
 
     @Test
-    public void retornaException_PasswordInvalida() throws Exception {
+    public void retornaException_PasswordInvalida_PasswordsDiferentes() throws Exception {
         // Mock
         Optional<UserModel> userModelOptionalMock = Optional.of(UserModelBuilder.createWithUserId());
         BDDMockito.when(this.userRepository.findByEmail(ArgumentMatchers.any())).thenReturn(userModelOptionalMock);
