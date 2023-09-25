@@ -1,5 +1,6 @@
 package com.emsapi.models;
 
+import java.util.Set;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +29,9 @@ public class CompanyModel {
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private UserModel userModel;
+
+    @OneToMany(mappedBy = "companyModel")
+    private Set<EmployeeModel> employeeModels;
 
     public CompanyModel() {}
 

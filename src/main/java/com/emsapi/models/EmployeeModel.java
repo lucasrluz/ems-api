@@ -37,20 +37,25 @@ public class EmployeeModel {
     @JoinColumn(name = "role_id", nullable = false)
     private RoleModel roleModel;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private CompanyModel companyModel;
+
     public EmployeeModel() {}
 
     public EmployeeModel(String firstName, String lastName, String age, String address, String email,
-            RoleModel roleModel) {
+            RoleModel roleModel, CompanyModel companyModel) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.address = address;
         this.email = email;
         this.roleModel = roleModel;
+        this.companyModel = companyModel;
     }
 
     public EmployeeModel(UUID employeeId, String firstName, String lastName, String age, String address, String email,
-            RoleModel roleModel) {
+            RoleModel roleModel, CompanyModel companyModel) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,6 +63,7 @@ public class EmployeeModel {
         this.address = address;
         this.email = email;
         this.roleModel = roleModel;
+        this.companyModel = companyModel;
     }
 
     public UUID getEmployeeId() {
@@ -114,5 +120,13 @@ public class EmployeeModel {
 
     public void setRoleModel(RoleModel roleModel) {
         this.roleModel = roleModel;
+    }
+
+    public CompanyModel getCompanyModel() {
+        return companyModel;
+    }
+
+    public void setCompanyModel(CompanyModel companyModel) {
+        this.companyModel = companyModel;
     }
 }
