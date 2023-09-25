@@ -26,15 +26,13 @@ public class RoleModel {
 
     public RoleModel() {}
 
-    public RoleModel(String name, Set<EmployeeModel> employeeModels) {
+    public RoleModel(String name) {
         this.name = name;
-        this.employeeModels = employeeModels;
     }
 
-    public RoleModel(UUID roleId, String name, Set<EmployeeModel> employeeModels) {
+    public RoleModel(UUID roleId, String name) {
         this.roleId = roleId;
         this.name = name;
-        this.employeeModels = employeeModels;
     }
 
     public UUID getRoleId() {
@@ -51,13 +49,5 @@ public class RoleModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<EmployeeModel> getEmployeeModels() {
-        return employeeModels;
-    }
-
-    public void setEmployeeModels(Set<EmployeeModel> employeeModels) {
-        this.employeeModels = employeeModels;
     }
 }
