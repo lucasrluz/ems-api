@@ -3,6 +3,8 @@ package com.emsapi.dtos.role;
 public class SaveRoleDTORequest {
     private String name;
 
+    public SaveRoleDTORequest() {}
+
     public SaveRoleDTORequest(String name) {
         this.name = name;
     }
