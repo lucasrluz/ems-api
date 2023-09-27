@@ -45,7 +45,7 @@ public class RoleService {
         List<GetAllRoleDTOResponse> getAllRoleDTOResponses = new ArrayList<GetAllRoleDTOResponse>();
 
         roleModels.forEach((element) -> {
-            GetAllRoleDTOResponse getRoleDTOResponse = new GetAllRoleDTOResponse(element.getName());
+            GetAllRoleDTOResponse getRoleDTOResponse = new GetAllRoleDTOResponse(element.getRoleId().toString(), element.getName());
             getAllRoleDTOResponses.add(getRoleDTOResponse);
         });
 

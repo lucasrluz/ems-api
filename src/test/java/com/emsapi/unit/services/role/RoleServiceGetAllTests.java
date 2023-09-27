@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.models.RoleModel;
@@ -27,9 +28,9 @@ public class RoleServiceGetAllTests {
     @Test
     public void retornaListaComRoles() {
         // Mock
-        RoleModel roleModelFooName = new RoleModel("foo");
-        RoleModel roleModelBarName = new RoleModel("bar");
-        RoleModel roleModelFaoName = new RoleModel("fao");
+        RoleModel roleModelFooName = new RoleModel(UUID.randomUUID(), "foo");
+        RoleModel roleModelBarName = new RoleModel(UUID.randomUUID(), "bar");
+        RoleModel roleModelFaoName = new RoleModel(UUID.randomUUID(), "fao");
         
         List<RoleModel> roleModels = new ArrayList<RoleModel>();
         
@@ -42,8 +43,13 @@ public class RoleServiceGetAllTests {
         // Test
         List<GetAllRoleDTOResponse> getRoleDTOResponses = this.roleService.getAll();
 
+        assertThat(getRoleDTOResponses.get(0).getRoleId()).isEqualTo(roleModelFooName.getRoleId().toString());
         assertThat(getRoleDTOResponses.get(0).getName()).isEqualTo(roleModelFooName.getName());
+        
+        assertThat(getRoleDTOResponses.get(1).getRoleId()).isEqualTo(roleModelBarName.getRoleId().toString());
         assertThat(getRoleDTOResponses.get(1).getName()).isEqualTo(roleModelBarName.getName());
+
+        assertThat(getRoleDTOResponses.get(2).getRoleId()).isEqualTo(roleModelFaoName.getRoleId().toString());
         assertThat(getRoleDTOResponses.get(2).getName()).isEqualTo(roleModelFaoName.getName());
     }
 
