@@ -1,12 +1,16 @@
 package com.emsapi.controllers;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
 import com.emsapi.dtos.role.SaveRoleDTOResponse;
 import com.emsapi.services.RoleService;
@@ -29,5 +33,12 @@ public class RoleController {
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getAll() {
+        List<GetAllRoleDTOResponse> getAllRoleDTOResponses = this.roleService.getAll();
+
+        return ResponseEntity.status(HttpStatus.OK).body(getAllRoleDTOResponses);
     }
 }
