@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.emsapi.dtos.role.GetAllRoleDTOResponse;
+import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
 import com.emsapi.dtos.role.SaveRoleDTOResponse;
 import com.emsapi.services.RoleService;
@@ -40,5 +42,16 @@ public class RoleController {
         List<GetAllRoleDTOResponse> getAllRoleDTOResponses = this.roleService.getAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(getAllRoleDTOResponses);
+    }
+
+    @GetMapping("/{roleId}")
+    public ResponseEntity<Object> get(@PathVariable String roleId) {
+        try {
+            GetRoleDTOResponse getRoleDTOResponse = this.roleService.get(roleId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(getRoleDTOResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
     }
 }
