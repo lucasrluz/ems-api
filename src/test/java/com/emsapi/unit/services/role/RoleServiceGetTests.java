@@ -18,7 +18,6 @@ import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.models.RoleModel;
 import com.emsapi.repositories.RoleRepository;
 import com.emsapi.services.RoleService;
-import com.emsapi.services.util.NameAlreadyRegisteredException;
 import com.emsapi.services.util.RoleNotFoundException;
 import com.emsapi.util.RoleModelBuilder;
 

@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import com.emsapi.models.RoleModel;
 import com.emsapi.models.UserModel;
 import com.emsapi.repositories.RoleRepository;
