@@ -14,6 +14,8 @@ import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
 import com.emsapi.dtos.role.SaveRoleDTOResponse;
+import com.emsapi.dtos.role.UpdateRoleDTORequest;
+import com.emsapi.dtos.role.UpdateRoleDTORespose;
 import com.emsapi.models.RoleModel;
 import com.emsapi.repositories.RoleRepository;
 import com.emsapi.services.util.NameAlreadyRegisteredException;
@@ -67,5 +69,27 @@ public class RoleService {
             findRoleByRoleId.get().getRoleId().toString(),
             findRoleByRoleId.get().getName()
         );
+    }
+
+    public UpdateRoleDTORespose update(UpdateRoleDTORequest updateRoleDTORequest, String roleId) throws InvalidRoleDomainException, RoleNotFoundException, NameAlreadyRegisteredException {
+        RoleDomain roleDomain = RoleDomain.validate(updateRoleDTORequest.getName());
+
+        Optional<RoleModel> findRoleModelByRoleId = this.roleRepository.findById(UUID.fromString(roleId));
+
+        if (findRoleModelByRoleId.isEmpty()) {
+            throw new RoleNotFoundException();
+        }
+
+        Optional<RoleModel> findRoleModelByName = this.roleRepository.findByName(roleDomain.getName());
+
+        if (!findRoleModelByName.isEmpty()) {
+            throw new NameAlreadyRegisteredException();
+        }
+
+        RoleModel roleModel = new RoleModel(UUID.fromString(roleId), roleDomain.getName());
+
+        RoleModel updateRoleModel = this.roleRepository.save(roleModel);
+
+        return new UpdateRoleDTORespose(updateRoleModel.getRoleId().toString());
     }
 }
