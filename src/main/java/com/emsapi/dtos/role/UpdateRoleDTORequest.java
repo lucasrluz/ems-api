@@ -3,6 +3,8 @@ package com.emsapi.dtos.role;
 public class UpdateRoleDTORequest {
     private String name;
 
+    public UpdateRoleDTORequest() {}
+
     public UpdateRoleDTORequest(String name) {
         this.name = name;
     }
