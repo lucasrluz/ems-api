@@ -16,8 +16,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.management.relation.Role;
-
 import com.emsapi.dtos.role.UpdateRoleDTORequest;
 import com.emsapi.models.RoleModel;
 import com.emsapi.models.UserModel;
