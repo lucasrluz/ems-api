@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.emsapi.domains.util.InvalidRoleDomainException;
+import com.emsapi.dtos.company.DeleteRoleDTOResponse;
 import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
@@ -71,6 +73,17 @@ public class RoleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         } catch (InvalidRoleDomainException | NameAlreadyRegisteredException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{roleId}")
+    public ResponseEntity<Object> delete(@PathVariable String roleId) {
+        try {
+            DeleteRoleDTOResponse deleteRoleDTOResponse = this.roleService.delete(roleId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(deleteRoleDTOResponse);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
 }
