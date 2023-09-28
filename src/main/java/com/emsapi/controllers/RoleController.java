@@ -7,15 +7,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emsapi.domains.util.InvalidRoleDomainException;
 import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
 import com.emsapi.dtos.role.SaveRoleDTOResponse;
+import com.emsapi.dtos.role.UpdateRoleDTORequest;
+import com.emsapi.dtos.role.UpdateRoleDTORespose;
 import com.emsapi.services.RoleService;
+import com.emsapi.services.util.NameAlreadyRegisteredException;
+import com.emsapi.services.util.RoleNotFoundException;
 
 @RestController
 @RequestMapping("/api/role")
@@ -52,6 +58,19 @@ public class RoleController {
             return ResponseEntity.status(HttpStatus.OK).body(getRoleDTOResponse);
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @PutMapping("/{roleId}")
+    public ResponseEntity<Object> update(@RequestBody UpdateRoleDTORequest updateRoleDTORequest, @PathVariable String roleId) {
+        try {
+            UpdateRoleDTORespose updateRoleDTORespose = this.roleService.update(updateRoleDTORequest, roleId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(updateRoleDTORespose);
+        } catch (RoleNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        } catch (InvalidRoleDomainException | NameAlreadyRegisteredException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 }
