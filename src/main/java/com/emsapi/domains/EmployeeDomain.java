@@ -29,22 +29,18 @@ public class EmployeeDomain {
     @Email
     private String email;
 
-    @NotBlank
-    private String roleId;
-
     private EmployeeDomain(@NotBlank String firstName, @NotBlank String lastName, @NotBlank String age,
-            @NotBlank String address, @NotBlank @Email String email, @NotBlank String roleId) {
+            @NotBlank String address, @NotBlank @Email String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.address = address;
         this.email = email;
-        this.roleId = roleId;
     }
 
-    public static EmployeeDomain validate(String firstName, String lastName, String age, String address, String email, String roleId) throws InvalidEmployeeDomainException {
+    public static EmployeeDomain validate(String firstName, String lastName, String age, String address, String email) throws InvalidEmployeeDomainException {
         try {
-            EmployeeDomain employeeDomain = new EmployeeDomain(firstName, lastName, age, address, email, roleId);
+            EmployeeDomain employeeDomain = new EmployeeDomain(firstName, lastName, age, address, email);
 
             validation(employeeDomain);
 
@@ -85,9 +81,5 @@ public class EmployeeDomain {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getRoleId() {
-        return roleId;
     }
 }

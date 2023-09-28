@@ -15,8 +15,7 @@ public class EmployeeDomainTests {
             "bar",
             "21",
             "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@gmail.com",
-            "0"
+            "foobar@gmail.com"
         );
 
         assertThat(employeeDomain.getFirstName()).isEqualTo("foo");
@@ -24,7 +23,6 @@ public class EmployeeDomainTests {
         assertThat(employeeDomain.getAge()).isEqualTo("21");
         assertThat(employeeDomain.getAddress()).isEqualTo("3828 Piermont Dr, Albuquerque, NM");
         assertThat(employeeDomain.getEmail()).isEqualTo("foobar@gmail.com");
-        assertThat(employeeDomain.getRoleId()).isEqualTo("0");
     }
 
     @Test
@@ -35,8 +33,7 @@ public class EmployeeDomainTests {
             "bar",
             "21",
             "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@gmail.com",
-            "0"
+            "foobar@gmail.com"
         ))
         .withMessage("firstName: must not be blank");
     }
@@ -49,8 +46,7 @@ public class EmployeeDomainTests {
             "",
             "21",
             "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@gmail.com",
-            "0"
+            "foobar@gmail.com"
         ))
         .withMessage("lastName: must not be blank");
     }
@@ -63,8 +59,7 @@ public class EmployeeDomainTests {
             "bar",
             "",
             "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@gmail.com",
-            "0"
+            "foobar@gmail.com"
         ))
         .withMessage("age: must not be blank");
     }
@@ -77,8 +72,7 @@ public class EmployeeDomainTests {
             "bar",
             "21",
             "",
-            "foobar@gmail.com",
-            "0"
+            "foobar@gmail.com"
         ))
         .withMessage("address: must not be blank");
     }
@@ -91,8 +85,7 @@ public class EmployeeDomainTests {
             "bar",
             "21",
             "3828 Piermont Dr, Albuquerque, NM",
-            "",
-            "0"
+            ""
         ))
         .withMessage("email: must not be blank");
     }
@@ -105,23 +98,8 @@ public class EmployeeDomainTests {
             "bar",
             "21",
             "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@",
-            "0"
+            "foobar@"
         ))
         .withMessage("email: must be a well-formed email address");
-    }
-
-    @Test
-    public void retornaException_RoleIdInvalido_ValorVazio() throws Exception {
-        assertThatExceptionOfType(InvalidEmployeeDomainException.class)
-        .isThrownBy(() -> EmployeeDomain.validate(
-            "foo",
-            "bar",
-            "21",
-            "3828 Piermont Dr, Albuquerque, NM",
-            "foobar@gmail.com",
-            ""
-        ))
-        .withMessage("roleId: must not be blank");
     }
 }
