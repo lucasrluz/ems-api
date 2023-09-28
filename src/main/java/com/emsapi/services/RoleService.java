@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.emsapi.domains.RoleDomain;
 import com.emsapi.domains.util.InvalidRoleDomainException;
+import com.emsapi.dtos.company.DeleteRoleDTOResponse;
 import com.emsapi.dtos.role.GetAllRoleDTOResponse;
 import com.emsapi.dtos.role.GetRoleDTOResponse;
 import com.emsapi.dtos.role.SaveRoleDTORequest;
@@ -91,5 +92,17 @@ public class RoleService {
         RoleModel updateRoleModel = this.roleRepository.save(roleModel);
 
         return new UpdateRoleDTORespose(updateRoleModel.getRoleId().toString());
+    }
+
+    public DeleteRoleDTOResponse delete(String roleId) throws RoleNotFoundException {
+        Optional<RoleModel> findRoleModelByRoleId = this.roleRepository.findById(UUID.fromString(roleId));
+
+        if (findRoleModelByRoleId.isEmpty()) {
+            throw new RoleNotFoundException();
+        }
+
+        this.roleRepository.deleteById(findRoleModelByRoleId.get().getRoleId());
+
+        return new DeleteRoleDTOResponse(findRoleModelByRoleId.get().getRoleId().toString());
     }
 }
