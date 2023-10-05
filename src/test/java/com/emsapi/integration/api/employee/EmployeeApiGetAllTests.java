@@ -92,7 +92,7 @@ public class EmployeeApiGetAllTests {
         
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/" + companyModel.getCompanyId().toString())
+            get("/api/employee/company/" + companyModel.getCompanyId().toString())
             .header("Authorization", "Bearer " + jwt)
         ).andReturn().getResponse();
 
@@ -146,7 +146,7 @@ public class EmployeeApiGetAllTests {
         
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/" + UUID.randomUUID().toString())
+            get("/api/employee/company/" + UUID.randomUUID().toString())
             .header("Authorization", "Bearer " + jwt)
         ).andReturn().getResponse();
 
@@ -168,7 +168,7 @@ public class EmployeeApiGetAllTests {
         
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/" + companyModel.getCompanyId().toString())
+            get("/api/employee/company/" + companyModel.getCompanyId().toString())
             .header("Authorization", "Bearer " + jwt)
         ).andReturn().getResponse();
 

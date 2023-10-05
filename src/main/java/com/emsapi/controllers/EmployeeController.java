@@ -42,7 +42,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/{companyId}")
+    @GetMapping("/company/{companyId}")
     public ResponseEntity<Object> getAll(@PathVariable String companyId, Authentication authentication) {
         try {
             String userId = authentication.getName();
