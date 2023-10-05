@@ -60,4 +60,40 @@ public abstract class EmployeeModelBuilder {
 
         return employeeModels;
     }
+
+    public static List<EmployeeModel> createListWithEmptyEmployeeId(RoleModel roleModel, CompanyModel companyModel) {
+        List<EmployeeModel> employeeModels = new ArrayList<EmployeeModel>();
+
+        employeeModels.add(new EmployeeModel(
+            "foo",
+            "bar",
+            "21",
+            "3828 Piermont Dr, Albuquerque, NM",
+            "foobar@gmail.com",
+            roleModel,
+            companyModel
+        ));
+
+        employeeModels.add(new EmployeeModel(
+            "bar",
+            "foo",
+            "21",
+            "3828 Piermont Dr, Albuquerque, NM",
+            "barfoo@gmail.com",
+            roleModel,
+            companyModel
+        ));
+
+        employeeModels.add(new EmployeeModel(
+            "foo",
+            "baz",
+            "21",
+            "3828 Piermont Dr, Albuquerque, NM",
+            "foobaz@gmail.com",
+            roleModel,
+            companyModel
+        ));
+
+        return employeeModels;
+    }
 }
