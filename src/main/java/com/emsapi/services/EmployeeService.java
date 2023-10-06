@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.emsapi.domains.EmployeeDomain;
 import com.emsapi.domains.util.InvalidEmployeeDomainException;
 import com.emsapi.dtos.employee.GetAllEmployeeDTOResponse;
+import com.emsapi.dtos.employee.GetEmployeeDTOResponse;
 import com.emsapi.dtos.employee.SaveEmployeeDTORequest;
 import com.emsapi.dtos.employee.SaveEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
@@ -21,6 +22,7 @@ import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.CompanyNotFoundException;
+import com.emsapi.services.util.EmployeeNotFoundException;
 import com.emsapi.services.util.RoleNotFoundException;
 
 @Service
@@ -106,4 +108,59 @@ public class EmployeeService {
 
         return getAllEmployeeDTOResponses;
     }
+
+    public GetEmployeeDTOResponse get(String employeeId, String companyId, String userId) throws CompanyNotFoundException, EmployeeNotFoundException {
+        Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
+
+        if (findCompanyModel.isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+
+        if (!findCompanyModel.get().getUserModel().getUserId().toString().equals(userId)) {
+            throw new CompanyNotFoundException();
+        }
+
+        Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(UUID.fromString(employeeId));
+
+        if (findEmployeeModel.isEmpty()) {
+            throw new EmployeeNotFoundException();
+        }
+
+        return new GetEmployeeDTOResponse(
+            findEmployeeModel.get().getFirstName(),
+            findEmployeeModel.get().getLastName(),
+            findEmployeeModel.get().getAge(),
+            findEmployeeModel.get().getAddress(),
+            findEmployeeModel.get().getCompanyModel().getCompanyId().toString(),
+            findEmployeeModel.get().getEmail(),
+            findEmployeeModel.get().getRoleModel().getRoleId().toString()
+        );
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
