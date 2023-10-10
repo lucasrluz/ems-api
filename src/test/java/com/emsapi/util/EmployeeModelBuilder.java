@@ -22,6 +22,18 @@ public abstract class EmployeeModelBuilder {
         );
     }
 
+    public static EmployeeModel createWithEmptyEmployeeId(RoleModel roleModel, CompanyModel companyModel) {
+        return new EmployeeModel(
+            "foo",
+            "bar",
+            "21",
+            "3828 Piermont Dr, Albuquerque, NM",
+            "foobar@gmail.com",
+            roleModel,
+            companyModel
+        );
+    }
+
     public static List<EmployeeModel> createListWithEmployeeId(RoleModel roleModel, CompanyModel companyModel) {
         List<EmployeeModel> employeeModels = new ArrayList<EmployeeModel>();
 
