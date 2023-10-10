@@ -57,6 +57,7 @@ public class EmployeeServiceGetTests {
             userModelMock.getUserId().toString() 
         );
 
+        assertThat(getEmployeeDTOResponse.getEmployeeId()).isEqualTo(employeeModelMock.get().getEmployeeId().toString());
         assertThat(getEmployeeDTOResponse.getFirstName()).isEqualTo(employeeModelMock.get().getFirstName());
         assertThat(getEmployeeDTOResponse.getLastName()).isEqualTo(employeeModelMock.get().getLastName());
         assertThat(getEmployeeDTOResponse.getAge()).isEqualTo(employeeModelMock.get().getAge());

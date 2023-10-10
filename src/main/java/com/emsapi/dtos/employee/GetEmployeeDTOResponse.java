@@ -1,6 +1,7 @@
 package com.emsapi.dtos.employee;
 
 public class GetEmployeeDTOResponse {
+    private String employeeId;
     private String firstName;
     private String lastName;
     private String age;
@@ -9,8 +10,9 @@ public class GetEmployeeDTOResponse {
     private String email;
     private String roleId;
     
-    public GetEmployeeDTOResponse(String firstName, String lastName, String age, String address, String companyId,
+    public GetEmployeeDTOResponse(String employeeId, String firstName, String lastName, String age, String address, String companyId,
             String email, String roleId) {
+        this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
@@ -18,6 +20,14 @@ public class GetEmployeeDTOResponse {
         this.companyId = companyId;
         this.email = email;
         this.roleId = roleId;
+    }
+
+    public String getEmployeeId() {
+        return this.employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getFirstName() {

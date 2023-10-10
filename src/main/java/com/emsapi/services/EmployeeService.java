@@ -127,6 +127,7 @@ public class EmployeeService {
         }
 
         return new GetEmployeeDTOResponse(
+            findEmployeeModel.get().getEmployeeId().toString(),
             findEmployeeModel.get().getFirstName(),
             findEmployeeModel.get().getLastName(),
             findEmployeeModel.get().getAge(),
