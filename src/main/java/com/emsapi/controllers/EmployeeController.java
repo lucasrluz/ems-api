@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.emsapi.domains.util.InvalidEmployeeDomainException;
 import com.emsapi.dtos.employee.GetAllEmployeeDTOResponse;
+import com.emsapi.dtos.employee.GetEmployeeDTOResponse;
 import com.emsapi.dtos.employee.SaveEmployeeDTORequest;
 import com.emsapi.dtos.employee.SaveEmployeeDTOResponse;
 import com.emsapi.services.EmployeeService;
@@ -50,6 +51,19 @@ public class EmployeeController {
             List<GetAllEmployeeDTOResponse> getAllEmployeeDTOResponses = this.employeeService.getAll(companyId, userId);
 
             return ResponseEntity.status(HttpStatus.OK).body(getAllEmployeeDTOResponses);
+        } catch (Exception exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/{employeeId}/company/{companyId}")
+    public ResponseEntity<Object> get(@PathVariable String employeeId, @PathVariable String companyId, Authentication authentication) {
+        try {
+            String userId = authentication.getName();
+
+            GetEmployeeDTOResponse getEmployeeDTOResponse = this.employeeService.get(employeeId, companyId, userId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(getEmployeeDTOResponse);
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
