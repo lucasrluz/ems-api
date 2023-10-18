@@ -13,6 +13,8 @@ import com.emsapi.dtos.employee.GetAllEmployeeDTOResponse;
 import com.emsapi.dtos.employee.GetEmployeeDTOResponse;
 import com.emsapi.dtos.employee.SaveEmployeeDTORequest;
 import com.emsapi.dtos.employee.SaveEmployeeDTOResponse;
+import com.emsapi.dtos.employee.UpdateEmployeeDTORequest;
+import com.emsapi.dtos.employee.UpdateEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
@@ -47,7 +49,7 @@ public class EmployeeService {
             saveEmployeeDTORequest.getAddress(),
             saveEmployeeDTORequest.getEmail()
         );
-        
+
         Optional<RoleModel> findRoleModel = this.roleRepository.findById(UUID.fromString(saveEmployeeDTORequest.getRoleId()));
 
         if (findRoleModel.isEmpty()) {
@@ -137,31 +139,51 @@ public class EmployeeService {
             findEmployeeModel.get().getRoleModel().getRoleId().toString()
         );
     }
+
+    public UpdateEmployeeDTOResponse update(UpdateEmployeeDTORequest updateEmployeeDTORequest, String employeeId, String userId) throws InvalidEmployeeDomainException, CompanyNotFoundException, RoleNotFoundException, EmployeeNotFoundException {
+        EmployeeDomain employeeDomain = EmployeeDomain.validate(
+            updateEmployeeDTORequest.getFirstName(),
+            updateEmployeeDTORequest.getLastName(),
+            updateEmployeeDTORequest.getAge(),
+            updateEmployeeDTORequest.getAddress(),
+            updateEmployeeDTORequest.getEmail()
+        );
+
+        Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(UUID.fromString(employeeId));
+
+        if (findEmployeeModel.isEmpty()) {
+            throw new EmployeeNotFoundException();
+        }
+
+        Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(updateEmployeeDTORequest.getCompanyId()));
+
+        if (findCompanyModel.isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+
+        if (!findCompanyModel.get().getUserModel().getUserId().toString().equals(userId)) {
+            throw new CompanyNotFoundException();
+        }
+
+        Optional<RoleModel> findRoleModel = this.roleRepository.findById(UUID.fromString(updateEmployeeDTORequest.getRoleId()));
+
+        if (findRoleModel.isEmpty()) {
+            throw new RoleNotFoundException();
+        }
+
+        EmployeeModel employeeModel = new EmployeeModel(
+            UUID.fromString(employeeId),
+            employeeDomain.getFirstName(),
+            employeeDomain.getLastName(),
+            employeeDomain.getAge(),
+            employeeDomain.getAddress(),
+            employeeDomain.getEmail(),
+            findRoleModel.get(),
+            findCompanyModel.get()
+        );
+
+        EmployeeModel updateEmployeeModel = this.employeeRepository.save(employeeModel);
+
+        return new UpdateEmployeeDTOResponse(updateEmployeeModel.getEmployeeId().toString());
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
