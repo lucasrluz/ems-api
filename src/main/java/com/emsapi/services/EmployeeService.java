@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.emsapi.domains.EmployeeDomain;
 import com.emsapi.domains.util.InvalidEmployeeDomainException;
+import com.emsapi.dtos.employee.DeleteEmployeeDTOResponse;
 import com.emsapi.dtos.employee.GetAllEmployeeDTOResponse;
 import com.emsapi.dtos.employee.GetEmployeeDTOResponse;
 import com.emsapi.dtos.employee.SaveEmployeeDTORequest;
@@ -186,4 +187,21 @@ public class EmployeeService {
 
         return new UpdateEmployeeDTOResponse(updateEmployeeModel.getEmployeeId().toString());
     }
+
+	public DeleteEmployeeDTOResponse delete(String employeeId, String userId) throws EmployeeNotFoundException {
+		Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(UUID.fromString(employeeId));
+
+		if (findEmployeeModel.isEmpty()) {
+			throw new EmployeeNotFoundException();
+		}
+
+		if (!findEmployeeModel.get().getCompanyModel().getUserModel().getUserId().toString().equals(userId)) {
+			throw new EmployeeNotFoundException();
+		}
+
+		this.employeeRepository.deleteById(findEmployeeModel.get().getEmployeeId());
+
+		return new DeleteEmployeeDTOResponse(findEmployeeModel.get().getEmployeeId().toString());
+	}
 }
+
