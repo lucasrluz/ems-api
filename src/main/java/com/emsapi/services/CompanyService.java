@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.emsapi.domains.CompanyDomain;
 import com.emsapi.domains.util.InvalidCompanyDomainException;
+import com.emsapi.dtos.authentication.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTOResponse;
 import com.emsapi.dtos.company.DeleteCompanyDTOResponse;
 import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
@@ -21,21 +23,28 @@ import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.CompanyNotFoundException;
+import com.emsapi.services.util.EmailOrPasswordInvalidException;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @Service
 public class CompanyService {
     private CompanyRepository companyRepository;
     private UserRepository userRepository;
+	private JwtService jwtService;
 
-    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository, JwtService jwtService) {
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
+		this.jwtService = jwtService;
     }
 
     public SaveCompanyDTOResponse save(SaveCompanyDTORequest saveCompanyDTORequest, String userId) throws InvalidCompanyDomainException {
         CompanyDomain companyDomain = CompanyDomain.validate(
             saveCompanyDTORequest.getName(),
-            saveCompanyDTORequest.getDescription()
+            saveCompanyDTORequest.getDescription(),
+			saveCompanyDTORequest.getEmail(),
+			saveCompanyDTORequest.getPassword()
         );
 
         Optional<UserModel> findUserModel = this.userRepository.findById(UUID.fromString(userId));
@@ -43,6 +52,8 @@ public class CompanyService {
         CompanyModel companyModel = new CompanyModel(
             companyDomain.getName(),
             companyDomain.getDescription(),
+			companyDomain.getEmail(),
+			companyDomain.getPassword(),
             findUserModel.get()
         );
 
@@ -92,7 +103,12 @@ public class CompanyService {
     }
 
     public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest, String companyId, String userId) throws CompanyNotFoundException, InvalidCompanyDomainException {
-        CompanyDomain companyDomain = CompanyDomain.validate(updateCompanyDTORequest.getName(), updateCompanyDTORequest.getDescription());
+        CompanyDomain companyDomain = CompanyDomain.validate(
+			updateCompanyDTORequest.getName(),
+			updateCompanyDTORequest.getDescription(),
+			updateCompanyDTORequest.getEmail(),
+			updateCompanyDTORequest.getPassword()	
+		);
         
         Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
         
@@ -106,7 +122,13 @@ public class CompanyService {
             throw new CompanyNotFoundException();
         }
 
-        CompanyModel companyModel = new CompanyModel(UUID.fromString(companyId), companyDomain.getName(), companyDomain.getDescription(), findUserModel.get());
+        CompanyModel companyModel = new CompanyModel(
+			UUID.fromString(companyId),
+			companyDomain.getName(),
+			companyDomain.getDescription(),
+			companyDomain.getEmail(),
+			companyDomain.getPassword(),
+			findUserModel.get());
     
         CompanyModel updateCompanyModel = this.companyRepository.save(companyModel);
 

@@ -26,6 +26,12 @@ public class CompanyModel {
     @Column(nullable = false)
     private String description;
 
+	@Column(nullable = false)
+	private String email;
+
+	@Column(nullable = false)
+	private String password;
+
     @ManyToOne
     @JoinColumn(name="user_id", nullable=false)
     private UserModel userModel;
@@ -35,16 +41,20 @@ public class CompanyModel {
 
     public CompanyModel() {}
 
-    public CompanyModel(String name, String description, UserModel userModel) {
+    public CompanyModel(String name, String description, String email, String password, UserModel userModel) {
         this.name = name;
         this.description = description;
+        this.email = email;
+        this.password = password;
         this.userModel = userModel;
     }
 
-    public CompanyModel(UUID companyId, String name, String description, UserModel userModel) {
+    public CompanyModel(UUID companyId, String name, String description, String email, String password, UserModel userModel) {
         this.companyId = companyId;
         this.name = name;
         this.description = description;
+        this.email = email;
+        this.password = password;
         this.userModel = userModel;
     }
 
@@ -79,4 +89,28 @@ public class CompanyModel {
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Set<EmployeeModel> getEmployeeModels() {
+		return employeeModels;
+	}
+
+	public void setEmployeeModels(Set<EmployeeModel> employeeModels) {
+		this.employeeModels = employeeModels;
+	}
 }

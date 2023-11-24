@@ -42,7 +42,7 @@ public class CompanyServiceSaveTests {
         BDDMockito.when(this.companyRepository.save(ArgumentMatchers.any())).thenReturn(companyModel);
 
         // Tests
-        SaveCompanyDTORequest saveCompanyDTORequest = new SaveCompanyDTORequest("foo", "bar");
+        SaveCompanyDTORequest saveCompanyDTORequest = new SaveCompanyDTORequest("foo", "bar", "foo@gmail.com", "123");
 
         SaveCompanyDTOResponse saveCompanyDTOResponse = this.companyService.save(
             saveCompanyDTORequest,

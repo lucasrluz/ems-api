@@ -52,7 +52,7 @@ public class CompanyServiceUpdateTests {
         BDDMockito.when(this.companyRepository.save(ArgumentMatchers.any())).thenReturn(companyModel);
         
         // Test
-        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo");
+        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo", "foo@gmail.com", "123");
 
         UpdateCompanyDTOResponse updateCompanyDTOResponse = this.companyService.update(
             updateCompanyDTORequest,
@@ -70,7 +70,7 @@ public class CompanyServiceUpdateTests {
         BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelOptionalMock);
         
         // Test
-        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo");
+        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo","foo@gmail.com", "123");
 
         assertThatExceptionOfType(CompanyNotFoundException.class)
         .isThrownBy(() -> this.companyService.update(updateCompanyDTORequest, UUID.randomUUID().toString(), UUID.randomUUID().toString()))
@@ -94,7 +94,7 @@ public class CompanyServiceUpdateTests {
         BDDMockito.when(this.companyRepository.save(ArgumentMatchers.any())).thenReturn(companyModel);
         
         // Test
-        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo");
+        UpdateCompanyDTORequest updateCompanyDTORequest = new UpdateCompanyDTORequest("bar", "foo", "foo@gmail.com", "123");
 
         assertThatExceptionOfType(CompanyNotFoundException.class)
         .isThrownBy(() -> this.companyService.update(updateCompanyDTORequest, companyModelOptionalMock.get().getCompanyId().toString(), userModeOptionalMock.get().getUserId().toString()))
