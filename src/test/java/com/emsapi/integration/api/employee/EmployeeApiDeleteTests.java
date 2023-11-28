@@ -20,16 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -41,9 +38,6 @@ public class EmployeeApiDeleteTests {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -68,17 +62,13 @@ public class EmployeeApiDeleteTests {
         this.employeeRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
 	@Test
 	public void retorna200EEmployeeId() throws Exception {
         // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModel));
+        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId());
+        String jwt = this.jwtService.generateJwt(saveCompanyModel.getCompanyId().toString());
 
         RoleModel saveRoleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -103,9 +93,8 @@ public class EmployeeApiDeleteTests {
 	@Test
 	public void retorna404EMesagemDeErro_EmployeeNaoEncontrado_EmployeeNaoCadastrado() throws Exception {
         // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
+		CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId());
+        String jwt = this.jwtService.generateJwt(saveCompanyModel.getCompanyId().toString());
 
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(
@@ -117,35 +106,4 @@ public class EmployeeApiDeleteTests {
 		assertThat(response.getContentAsString()).isEqualTo("Employee not found");
 	}
 
-	@Test
-	public void retorna404EMesagemDeErro_EmployeeNaoEncontrado_UserDaCompanyDiferenteDoInformado() throws Exception {
-        // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-		UserModel userModelForCompany = UserModelBuilder.createWithEmptyUserId();
-		userModelForCompany.setEmail("barfoo@gmail.com");
-
-		UserModel saveUserModelForCompany = this.userRepository.save(userModelForCompany);
-
-        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModelForCompany));
-
-        RoleModel saveRoleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
-
-        EmployeeModel saveEmployeeModel = this.employeeRepository.save(EmployeeModelBuilder.createWithEmptyEmployeeId(saveRoleModel, saveCompanyModel));
-
-        // Test
-        MockHttpServletResponse response = this.mockMvc.perform(
-            delete("/api/employee/" + saveEmployeeModel.getEmployeeId().toString())
-            .header("Authorization", "Bearer " + jwt)
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404); 
-		assertThat(response.getContentAsString()).isEqualTo("Employee not found");
-
-		Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(saveEmployeeModel.getEmployeeId());
-
-		assertThat(findEmployeeModel.isEmpty()).isEqualTo(false);
-	}
 }

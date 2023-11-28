@@ -19,11 +19,9 @@ import com.emsapi.dtos.employee.UpdateEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.CompanyNotFoundException;
 import com.emsapi.services.util.EmployeeNotFoundException;
 import com.emsapi.services.util.RoleNotFoundException;
@@ -33,13 +31,11 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     private CompanyRepository companyRepository;
     private RoleRepository roleRepository;
-    private UserRepository userRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository, CompanyRepository companyRepository, RoleRepository roleRepository, UserRepository userRepository) {
+    public EmployeeService(EmployeeRepository employeeRepository, CompanyRepository companyRepository, RoleRepository roleRepository) {
         this.employeeRepository = employeeRepository;
         this.companyRepository = companyRepository;
         this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
     }
 
     public SaveEmployeeDTOResponse save(SaveEmployeeDTORequest saveEmployeeDTORequest) throws InvalidEmployeeDomainException, RoleNotFoundException, CompanyNotFoundException {
@@ -78,16 +74,10 @@ public class EmployeeService {
         return new SaveEmployeeDTOResponse(saveEmployeeModel.getEmployeeId().toString());
     }
 
-    public List<GetAllEmployeeDTOResponse> getAll(String companyId, String userId) throws CompanyNotFoundException {
-        UserModel findUserModel = this.userRepository.findById(UUID.fromString(userId)).get();
-
+    public List<GetAllEmployeeDTOResponse> getAll(String companyId) throws CompanyNotFoundException {
         Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
 
         if (findCompanyModel.isEmpty()) {
-            throw new CompanyNotFoundException();
-        }
-
-        if (!findCompanyModel.get().getUserModel().getUserId().equals(findUserModel.getUserId())) {
             throw new CompanyNotFoundException();
         }
 
@@ -112,17 +102,7 @@ public class EmployeeService {
         return getAllEmployeeDTOResponses;
     }
 
-    public GetEmployeeDTOResponse get(String employeeId, String companyId, String userId) throws CompanyNotFoundException, EmployeeNotFoundException {
-        Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
-
-        if (findCompanyModel.isEmpty()) {
-            throw new CompanyNotFoundException();
-        }
-
-        if (!findCompanyModel.get().getUserModel().getUserId().toString().equals(userId)) {
-            throw new CompanyNotFoundException();
-        }
-
+    public GetEmployeeDTOResponse get(String employeeId, String companyId) throws CompanyNotFoundException, EmployeeNotFoundException {
         Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(UUID.fromString(employeeId));
 
         if (findEmployeeModel.isEmpty()) {
@@ -141,7 +121,7 @@ public class EmployeeService {
         );
     }
 
-    public UpdateEmployeeDTOResponse update(UpdateEmployeeDTORequest updateEmployeeDTORequest, String employeeId, String userId) throws InvalidEmployeeDomainException, CompanyNotFoundException, RoleNotFoundException, EmployeeNotFoundException {
+    public UpdateEmployeeDTOResponse update(UpdateEmployeeDTORequest updateEmployeeDTORequest, String employeeId) throws InvalidEmployeeDomainException, CompanyNotFoundException, RoleNotFoundException, EmployeeNotFoundException {
         EmployeeDomain employeeDomain = EmployeeDomain.validate(
             updateEmployeeDTORequest.getFirstName(),
             updateEmployeeDTORequest.getLastName(),
@@ -160,11 +140,7 @@ public class EmployeeService {
 
         if (findCompanyModel.isEmpty()) {
             throw new CompanyNotFoundException();
-        }
-
-        if (!findCompanyModel.get().getUserModel().getUserId().toString().equals(userId)) {
-            throw new CompanyNotFoundException();
-        }
+        } 
 
         Optional<RoleModel> findRoleModel = this.roleRepository.findById(UUID.fromString(updateEmployeeDTORequest.getRoleId()));
 
@@ -188,16 +164,12 @@ public class EmployeeService {
         return new UpdateEmployeeDTOResponse(updateEmployeeModel.getEmployeeId().toString());
     }
 
-	public DeleteEmployeeDTOResponse delete(String employeeId, String userId) throws EmployeeNotFoundException {
+	public DeleteEmployeeDTOResponse delete(String employeeId) throws EmployeeNotFoundException {
 		Optional<EmployeeModel> findEmployeeModel = this.employeeRepository.findById(UUID.fromString(employeeId));
 
 		if (findEmployeeModel.isEmpty()) {
 			throw new EmployeeNotFoundException();
-		}
-
-		if (!findEmployeeModel.get().getCompanyModel().getUserModel().getUserId().toString().equals(userId)) {
-			throw new EmployeeNotFoundException();
-		}
+		}	
 
 		this.employeeRepository.deleteById(findEmployeeModel.get().getEmployeeId());
 

@@ -18,16 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONArray;
@@ -42,9 +39,6 @@ public class EmployeeApiGetAllTests {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -69,17 +63,13 @@ public class EmployeeApiGetAllTests {
         this.employeeRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
     @Test
     public void retorna200EListaComEmployees() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -140,35 +130,12 @@ public class EmployeeApiGetAllTests {
     @Test
     public void retorna404EMensagemDeErro_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
         
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(
             get("/api/employee/company/" + UUID.randomUUID().toString())
-            .header("Authorization", "Bearer " + jwt)
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.getContentAsString()).isEqualTo("Company not found");
-    }
-
-    @Test
-    public void retorna404EMensagemDeErro_CompanyNaoEncontrada_UserIdDiferenteDoInformado() throws Exception {
-        // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        UserModel userModelForCompany = UserModelBuilder.createWithEmptyUserId();
-        userModelForCompany.setEmail("barfoo@gmail.com");
-        this.userRepository.save(userModelForCompany);
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModelForCompany));
-        
-        // Test
-        MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/company/" + companyModel.getCompanyId().toString())
             .header("Authorization", "Bearer " + jwt)
         ).andReturn().getResponse();
 

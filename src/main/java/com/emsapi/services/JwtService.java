@@ -18,10 +18,10 @@ public class JwtService {
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    public String generateJwt(String userId) {
+    public String generateJwt(String companyId) {
         return Jwts
             .builder()
-            .setSubject(userId)
+            .setSubject(companyId)
             .setIssuedAt(new Date())
             .setExpiration(new Date(new Date().getTime() + this.jwtExpirationMs))
             .signWith(this.getSecretKey(), SignatureAlgorithm.HS256)

@@ -1,19 +1,19 @@
 package com.emsapi.dtos.authentication;
 
 public class SignUpDTOResponse {
-    private String userId;
+    private String companyId;
 
     public SignUpDTOResponse() {}
 
-    public SignUpDTOResponse(String userId) {
-        this.userId = userId;
+    public SignUpDTOResponse(String companyId) {
+        this.companyId = companyId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
     }
 }

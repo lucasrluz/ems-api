@@ -18,7 +18,6 @@ import com.emsapi.dtos.employee.UpdateEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
@@ -30,7 +29,6 @@ import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
 import com.emsapi.util.UpdateEmployeeDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 
 @ExtendWith(SpringExtension.class)
 public class EmployeeServiceUpdateTests {
@@ -49,9 +47,8 @@ public class EmployeeServiceUpdateTests {
     @Test
     public void retornaEmployeeId() throws Exception {
         // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
         RoleModel roleModelMock = RoleModelBuilder.createWithRoleId();
-        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId(userModelMock);
+        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId();
         Optional<EmployeeModel> employeeModelMock = Optional.of(EmployeeModelBuilder.createWithEmployeeId(roleModelMock, companyModelMock));
         BDDMockito.when(this.employeeRepository.findById(ArgumentMatchers.any())).thenReturn(employeeModelMock);
 
@@ -59,7 +56,7 @@ public class EmployeeServiceUpdateTests {
         BDDMockito.when(this.roleRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(roleModelMock));
 
         RoleModel newRoleModelMock = RoleModelBuilder.createWithRoleId();
-        CompanyModel newCompanyModelMock = CompanyModelBuilder.createWithCompanyId(userModelMock);
+        CompanyModel newCompanyModelMock = CompanyModelBuilder.createWithCompanyId();
 
         employeeModelMock.get().setFirstName("bar");
         employeeModelMock.get().setLastName("foo");
@@ -79,8 +76,7 @@ public class EmployeeServiceUpdateTests {
 
         UpdateEmployeeDTOResponse updateEmployeeDTOResponse = this.employeeService.update(
             updateEmployeeDTORequest,
-            employeeModelMock.get().getEmployeeId().toString(),
-            userModelMock.getUserId().toString()
+            employeeModelMock.get().getEmployeeId().toString()
         );
 
         assertThat(updateEmployeeDTOResponse.getEmployeeId()).isEqualTo(employeeModelMock.get().getEmployeeId().toString());
@@ -100,7 +96,6 @@ public class EmployeeServiceUpdateTests {
         assertThatExceptionOfType(EmployeeNotFoundException.class)
         .isThrownBy(() -> this.employeeService.update(
             updateEmployeeDTORequest,
-            UUID.randomUUID().toString(),
             UUID.randomUUID().toString()
         ))
         .withMessage("Employee not found");
@@ -109,9 +104,8 @@ public class EmployeeServiceUpdateTests {
     @Test
     public void retornaException_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
         // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
         RoleModel roleModelMock = RoleModelBuilder.createWithRoleId();
-        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId(userModelMock);
+        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId();
         Optional<EmployeeModel> employeeModelMock = Optional.of(EmployeeModelBuilder.createWithEmployeeId(roleModelMock, companyModelMock));
         BDDMockito.when(this.employeeRepository.findById(ArgumentMatchers.any())).thenReturn(employeeModelMock);
 
@@ -126,34 +120,7 @@ public class EmployeeServiceUpdateTests {
         assertThatExceptionOfType(CompanyNotFoundException.class)
         .isThrownBy(() -> this.employeeService.update(
             updateEmployeeDTORequest,
-            employeeModelMock.get().getEmployeeId().toString(),
-            userModelMock.getUserId().toString()
-        ))
-        .withMessage("Company not found");
-    }
-
-    @Test
-    public void retornaException_CompanyNaoEncontrada_UserDiferenteDoInformado() throws Exception {
-        // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
-        RoleModel roleModelMock = RoleModelBuilder.createWithRoleId();
-        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId(userModelMock);
-        Optional<EmployeeModel> employeeModelMock = Optional.of(EmployeeModelBuilder.createWithEmployeeId(roleModelMock, companyModelMock));
-        BDDMockito.when(this.employeeRepository.findById(ArgumentMatchers.any())).thenReturn(employeeModelMock);
-
-        BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.of(companyModelMock));
-       
-        // Test
-        UpdateEmployeeDTORequest updateEmployeeDTORequest = UpdateEmployeeDTORequestBuilder.createWithValidData(
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString()
-        ); 
-
-        assertThatExceptionOfType(CompanyNotFoundException.class)
-        .isThrownBy(() -> this.employeeService.update(
-            updateEmployeeDTORequest,
-            employeeModelMock.get().getEmployeeId().toString(),
-            UUID.randomUUID().toString()
+            employeeModelMock.get().getEmployeeId().toString()
         ))
         .withMessage("Company not found");
     }
@@ -161,9 +128,8 @@ public class EmployeeServiceUpdateTests {
     @Test
     public void retornaException_RoleNaoEncontrada_RoleNaoCadastrada() throws Exception {
         // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
         RoleModel roleModelMock = RoleModelBuilder.createWithRoleId();
-        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId(userModelMock);
+        CompanyModel companyModelMock = CompanyModelBuilder.createWithCompanyId();
         Optional<EmployeeModel> employeeModelMock = Optional.of(EmployeeModelBuilder.createWithEmployeeId(roleModelMock, companyModelMock));
         BDDMockito.when(this.employeeRepository.findById(ArgumentMatchers.any())).thenReturn(employeeModelMock);
 
@@ -179,8 +145,7 @@ public class EmployeeServiceUpdateTests {
         assertThatExceptionOfType(RoleNotFoundException.class)
         .isThrownBy(() -> this.employeeService.update(
             updateEmployeeDTORequest,
-            employeeModelMock.get().getEmployeeId().toString(),
-            userModelMock.getUserId().toString()
+            employeeModelMock.get().getEmployeeId().toString()
         ))
         .withMessage("Role not found");
     }

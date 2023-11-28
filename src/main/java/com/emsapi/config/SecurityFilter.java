@@ -10,8 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.emsapi.models.UserModel;
-import com.emsapi.repositories.UserRepository;
+import com.emsapi.models.CompanyModel;
+import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.services.JwtService;
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -22,11 +22,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     private JwtService jwtService;
-    private UserRepository userRepository;
+    private CompanyRepository companyRepository;
 
-    public SecurityFilter(JwtService jwtService, UserRepository userRepository) {
+    public SecurityFilter(JwtService jwtService, CompanyRepository companyRepository) {
         this.jwtService = jwtService;
-        this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
     }
 
     @Override
@@ -34,11 +34,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         String jwt = getToken(request);
 
         if (jwt != null) {
-            String userId = this.jwtService.validateJwt(jwt);
+            String companyId = this.jwtService.validateJwt(jwt);
 
-            Optional<UserModel> findUserModelResponse = this.userRepository.findById(UUID.fromString(userId));
+            Optional<CompanyModel> findCompanyModelResponse = this.companyRepository.findById(UUID.fromString(companyId));
 
-            if (findUserModelResponse.isEmpty()) {
+            if (findCompanyModelResponse.isEmpty()) {
                 response.setStatus(403);
                 response.getWriter().write("JWT invalid");
                 response.getWriter().flush();
@@ -46,7 +46,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(companyId, null, Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 

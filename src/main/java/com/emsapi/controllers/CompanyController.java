@@ -15,11 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.emsapi.domains.util.InvalidCompanyDomainException;
+import com.emsapi.dtos.authentication.SignInDTORequest;
+import com.emsapi.dtos.authentication.SignInDTOResponse;
+import com.emsapi.dtos.authentication.SignUpDTORequest;
+import com.emsapi.dtos.authentication.SignUpDTOResponse;
 import com.emsapi.dtos.company.DeleteCompanyDTOResponse;
-import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
-import com.emsapi.dtos.company.SaveCompanyDTORequest;
-import com.emsapi.dtos.company.SaveCompanyDTOResponse;
 import com.emsapi.dtos.company.UpdateCompanyDTORequest;
 import com.emsapi.dtos.company.UpdateCompanyDTOResponse;
 import com.emsapi.services.CompanyService;
@@ -34,34 +35,32 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @PostMapping
-    public ResponseEntity<Object> save(@RequestBody SaveCompanyDTORequest saveCompanyDTORequest, Authentication authentication) {
-        try {
-            String userId = authentication.getName();
+    @PostMapping("/signup")
+    public ResponseEntity<Object> signUp(@RequestBody SignUpDTORequest signUpDTORequest, Authentication authentication) {
+        try { 
+            SignUpDTOResponse signUpDTOResponse = this.companyService.signUp(signUpDTORequest);
             
-            SaveCompanyDTOResponse saveCompanyDTOResponse = this.companyService.save(saveCompanyDTORequest, userId);
-            
-            return ResponseEntity.status(HttpStatus.CREATED).body(saveCompanyDTOResponse);
+            return ResponseEntity.status(HttpStatus.CREATED).body(signUpDTOResponse);
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getAll(Authentication authentication) {
-        String userId = authentication.getName();
+	@PostMapping("/signin")
+	public ResponseEntity<Object> signIn(@RequestBody SignInDTORequest signInDTORequest) {
+		try {
+			SignInDTOResponse signInDTOResponse = this.companyService.signIn(signInDTORequest);
 
-        List<GetAllCompanyDTOResponse> getAllCompanyDTOResponse = this.companyService.getAll(userId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(getAllCompanyDTOResponse);
-    }
+			return ResponseEntity.status(HttpStatus.CREATED).body(signInDTOResponse);
+		} catch (Exception exception) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+		}
+	}
 
     @GetMapping("/{companyId}")
     public ResponseEntity<Object> get(@PathVariable String companyId, Authentication authentication) {
         try {
-           String userId = authentication.getName();
-
-           GetCompanyDTOResponse getCompanyDTOResponse = this.companyService.get(companyId, userId);
+           GetCompanyDTOResponse getCompanyDTOResponse = this.companyService.get(companyId);
 
             return ResponseEntity.status(HttpStatus.OK).body(getCompanyDTOResponse);
         } catch (Exception exception) {
@@ -72,9 +71,7 @@ public class CompanyController {
     @PutMapping("/{companyId}")
     public ResponseEntity<Object> update(@PathVariable String companyId, @RequestBody UpdateCompanyDTORequest updateCompanyDTORequest, Authentication authentication) {
         try {
-            String userId = authentication.getName();
-
-            UpdateCompanyDTOResponse updateCompanyDTOResponse = this.companyService.update(updateCompanyDTORequest, companyId, userId);
+            UpdateCompanyDTOResponse updateCompanyDTOResponse = this.companyService.update(updateCompanyDTORequest, companyId);
 
             return ResponseEntity.status(HttpStatus.OK).body(updateCompanyDTOResponse);
         } catch (CompanyNotFoundException exception) {
@@ -87,9 +84,7 @@ public class CompanyController {
     @DeleteMapping("/{companyId}")
     public ResponseEntity<Object> delete(@PathVariable String companyId, Authentication authentication) {
         try {
-            String userId = authentication.getName();
-
-            DeleteCompanyDTOResponse deleteCompanyDTOResponse = this.companyService.delete(companyId, userId);
+            DeleteCompanyDTOResponse deleteCompanyDTOResponse = this.companyService.delete(companyId);
 
             return ResponseEntity.status(HttpStatus.OK).body(deleteCompanyDTOResponse);
         } catch (Exception exception) {

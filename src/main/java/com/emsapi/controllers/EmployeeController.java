@@ -52,9 +52,7 @@ public class EmployeeController {
     @GetMapping("/company/{companyId}")
     public ResponseEntity<Object> getAll(@PathVariable String companyId, Authentication authentication) {
         try {
-            String userId = authentication.getName();
-
-            List<GetAllEmployeeDTOResponse> getAllEmployeeDTOResponses = this.employeeService.getAll(companyId, userId);
+            List<GetAllEmployeeDTOResponse> getAllEmployeeDTOResponses = this.employeeService.getAll(companyId);
 
             return ResponseEntity.status(HttpStatus.OK).body(getAllEmployeeDTOResponses);
         } catch (Exception exception) {
@@ -65,9 +63,7 @@ public class EmployeeController {
     @GetMapping("/{employeeId}/company/{companyId}")
     public ResponseEntity<Object> get(@PathVariable String employeeId, @PathVariable String companyId, Authentication authentication) {
         try {
-            String userId = authentication.getName();
-
-            GetEmployeeDTOResponse getEmployeeDTOResponse = this.employeeService.get(employeeId, companyId, userId);
+            GetEmployeeDTOResponse getEmployeeDTOResponse = this.employeeService.get(employeeId, companyId);
 
             return ResponseEntity.status(HttpStatus.OK).body(getEmployeeDTOResponse);
         } catch (Exception exception) {
@@ -78,9 +74,7 @@ public class EmployeeController {
 	@PutMapping("/{employeeId}")
 	public ResponseEntity<Object> update(@PathVariable String employeeId, @RequestBody UpdateEmployeeDTORequest updateEmployeeDTORequest, Authentication authentication) {
 		try {
-			String userId = authentication.getName();
-
-			UpdateEmployeeDTOResponse updateEmployeeDTOResponse = this.employeeService.update(updateEmployeeDTORequest, employeeId, userId);
+			UpdateEmployeeDTOResponse updateEmployeeDTOResponse = this.employeeService.update(updateEmployeeDTORequest, employeeId);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(updateEmployeeDTOResponse);
 		} catch (EmployeeNotFoundException | RoleNotFoundException | CompanyNotFoundException exception) {
@@ -93,9 +87,7 @@ public class EmployeeController {
 	@DeleteMapping("/{employeeId}")
 	public ResponseEntity<Object> delete(@PathVariable String employeeId, Authentication authentication) {
 		try {
-			String userId = authentication.getName();
-
-			DeleteEmployeeDTOResponse deleteEmployeeDTOResponse = this.employeeService.delete(employeeId, userId);
+			DeleteEmployeeDTOResponse deleteEmployeeDTOResponse = this.employeeService.delete(employeeId);
 
 			return ResponseEntity.status(HttpStatus.OK).body(deleteEmployeeDTOResponse);
 		} catch (Exception exception) {

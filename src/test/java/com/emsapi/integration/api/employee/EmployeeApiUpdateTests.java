@@ -22,17 +22,14 @@ import com.emsapi.dtos.employee.UpdateEmployeeDTORequest;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
 import com.emsapi.util.UpdateEmployeeDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -44,9 +41,6 @@ public class EmployeeApiUpdateTests {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -71,17 +65,13 @@ public class EmployeeApiUpdateTests {
         this.employeeRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
 	@Test
 	public void retorna200EEmployeeId() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -118,11 +108,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna404EException_EmployeeNaoEncontrado_EmployeeNaoCadastrado() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -144,83 +131,10 @@ public class EmployeeApiUpdateTests {
 	}
 
 	@Test
-	public void retorna404EException_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
-		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
-
-        RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
-
-		EmployeeModel employeeModel = this.employeeRepository.save(EmployeeModelBuilder.createWithEmptyEmployeeId(
-			roleModel,
-			companyModel	
-		));
-
-        // Test
-       	UpdateEmployeeDTORequest updateEmployeeDTORequest = UpdateEmployeeDTORequestBuilder.createWithValidData(
-			roleModel.getRoleId().toString(),
-			UUID.randomUUID().toString()
-		);
-
-        MockHttpServletResponse response = this.mockMvc.perform(
-            put("/api/employee/" + employeeModel.getEmployeeId().toString())
-            .header("Authorization", "Bearer " + jwt)
-            .contentType("application/json")
-            .content(asJsonString(updateEmployeeDTORequest))
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
- 		assertThat(response.getContentAsString()).isEqualTo("Company not found");
-	}
-
-	@Test
-	public void retorna404EException_CompanyNaoEncontrada_UserDiferenteDoInformado() throws Exception {
-		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
-
-        RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
-
-		EmployeeModel employeeModel = this.employeeRepository.save(EmployeeModelBuilder.createWithEmptyEmployeeId(roleModel, companyModel));
-
-
-		UserModel userModelForCompany = UserModelBuilder.createWithEmptyUserId();
-		userModelForCompany.setEmail("barfoo@gmail.com");
-
-		UserModel saveUserModelForCompany = this.userRepository.save(userModelForCompany);
-		CompanyModel newCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModelForCompany));
-
-        // Test
-       	UpdateEmployeeDTORequest updateEmployeeDTORequest = UpdateEmployeeDTORequestBuilder.createWithValidData(
-			roleModel.getRoleId().toString(),
-			newCompanyModel.getCompanyId().toString()
-		);
-
-        MockHttpServletResponse response = this.mockMvc.perform(
-            put("/api/employee/" + employeeModel.getEmployeeId().toString())
-            .header("Authorization", "Bearer " + jwt)
-            .contentType("application/json")
-            .content(asJsonString(updateEmployeeDTORequest))
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
-		assertThat(response.getContentAsString()).isEqualTo("Company not found");
-	}
-
-	@Test
 	public void retorna404EException_RoleNaoEncontrada_RoleNaoCadastrada() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -246,11 +160,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_FirstNameInvalido_ValorVazio() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -276,11 +187,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_LastNameInvalido_ValorVazio() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -306,11 +214,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_AgeInvalido_ValorVazio() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -336,11 +241,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_AddressInvalido_ValorVazio() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -366,11 +268,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_EmailInvalido_ValorVazio() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -396,11 +295,8 @@ public class EmployeeApiUpdateTests {
 	@Test
 	public void retorna400EException_EmailInvalido_FormatoInvalido() throws Exception {
 		// Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 

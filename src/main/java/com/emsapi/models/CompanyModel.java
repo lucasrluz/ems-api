@@ -32,30 +32,24 @@ public class CompanyModel {
 	@Column(nullable = false)
 	private String password;
 
-    @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
-    private UserModel userModel;
-
     @OneToMany(mappedBy = "companyModel")
     private Set<EmployeeModel> employeeModels;
 
     public CompanyModel() {}
 
-    public CompanyModel(String name, String description, String email, String password, UserModel userModel) {
+    public CompanyModel(String name, String description, String email, String password) {
         this.name = name;
         this.description = description;
         this.email = email;
         this.password = password;
-        this.userModel = userModel;
     }
 
-    public CompanyModel(UUID companyId, String name, String description, String email, String password, UserModel userModel) {
+    public CompanyModel(UUID companyId, String name, String description, String email, String password) {
         this.companyId = companyId;
         this.name = name;
         this.description = description;
         this.email = email;
         this.password = password;
-        this.userModel = userModel;
     }
 
     public UUID getCompanyId() {
@@ -80,14 +74,6 @@ public class CompanyModel {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UserModel getUserModel() {
-        return userModel;
-    }
-
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
     }
 
 	public String getEmail() {

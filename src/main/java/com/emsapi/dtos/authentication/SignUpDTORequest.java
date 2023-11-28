@@ -1,32 +1,16 @@
 package com.emsapi.dtos.authentication;
 
 public class SignUpDTORequest {
-    private String firstName;
-    private String lastName;
+    private String name;
+    private String description;
     private String email;
     private String password;
     
-    public SignUpDTORequest(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public SignUpDTORequest(String name, String description, String email, String password) {
+		this.name = name;
+		this.description = description;
         this.email = email;
         this.password = password;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -44,4 +28,20 @@ public class SignUpDTORequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }

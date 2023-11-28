@@ -11,17 +11,14 @@ import com.emsapi.domains.CompanyDomain;
 import com.emsapi.domains.util.InvalidCompanyDomainException;
 import com.emsapi.dtos.authentication.SignInDTORequest;
 import com.emsapi.dtos.authentication.SignInDTOResponse;
+import com.emsapi.dtos.authentication.SignUpDTORequest;
+import com.emsapi.dtos.authentication.SignUpDTOResponse;
 import com.emsapi.dtos.company.DeleteCompanyDTOResponse;
-import com.emsapi.dtos.company.GetAllCompanyDTOResponse;
 import com.emsapi.dtos.company.GetCompanyDTOResponse;
-import com.emsapi.dtos.company.SaveCompanyDTORequest;
-import com.emsapi.dtos.company.SaveCompanyDTOResponse;
 import com.emsapi.dtos.company.UpdateCompanyDTORequest;
 import com.emsapi.dtos.company.UpdateCompanyDTOResponse;
 import com.emsapi.models.CompanyModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.util.CompanyNotFoundException;
 import com.emsapi.services.util.EmailOrPasswordInvalidException;
 
@@ -30,70 +27,56 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 @Service
 public class CompanyService {
     private CompanyRepository companyRepository;
-    private UserRepository userRepository;
 	private JwtService jwtService;
 
-    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository, JwtService jwtService) {
+    public CompanyService(CompanyRepository companyRepository, JwtService jwtService) {
         this.companyRepository = companyRepository;
-        this.userRepository = userRepository;
 		this.jwtService = jwtService;
     }
 
-    public SaveCompanyDTOResponse save(SaveCompanyDTORequest saveCompanyDTORequest, String userId) throws InvalidCompanyDomainException {
+    public SignUpDTOResponse signUp(SignUpDTORequest signUpDTORequest) throws InvalidCompanyDomainException {
         CompanyDomain companyDomain = CompanyDomain.validate(
-            saveCompanyDTORequest.getName(),
-            saveCompanyDTORequest.getDescription(),
-			saveCompanyDTORequest.getEmail(),
-			saveCompanyDTORequest.getPassword()
+            signUpDTORequest.getName(),
+            signUpDTORequest.getDescription(),
+			signUpDTORequest.getEmail(),
+			signUpDTORequest.getPassword()
         );
-
-        Optional<UserModel> findUserModel = this.userRepository.findById(UUID.fromString(userId));
 
         CompanyModel companyModel = new CompanyModel(
             companyDomain.getName(),
             companyDomain.getDescription(),
 			companyDomain.getEmail(),
-			companyDomain.getPassword(),
-            findUserModel.get()
+			companyDomain.getPassword()
         );
 
         CompanyModel saveCompanyModelResponse = this.companyRepository.save(companyModel);
 
-        return new SaveCompanyDTOResponse(saveCompanyModelResponse.getCompanyId().toString());
+        return new SignUpDTOResponse(saveCompanyModelResponse.getCompanyId().toString());
     }
 
-    public List<GetAllCompanyDTOResponse> getAll(String userId) {
-        Optional<UserModel> findUser = this.userRepository.findById(UUID.fromString(userId));
-        
-        List<CompanyModel> companyModels = this.companyRepository.findByUserModel(findUser.get());
+    public SignInDTOResponse signIn(SignInDTORequest signInDTORequest) throws Exception {
+        Optional<CompanyModel> findCompanyModel = this.companyRepository.findByEmail(signInDTORequest.getEmail());
 
-        List<GetAllCompanyDTOResponse> getAllCompanyDTOResponse = new ArrayList<GetAllCompanyDTOResponse>();
+        if (findCompanyModel.isEmpty()) {
+            throw new EmailOrPasswordInvalidException();
+        }
 
-        companyModels.forEach((element) -> {
-            GetAllCompanyDTOResponse newGetAllCompanyDTOResponse = new GetAllCompanyDTOResponse(
-                element.getCompanyId().toString(),
-                element.getName(),
-                element.getDescription()
-            );
+        boolean validPassword = BCrypt.verifyer().verify(
+            signInDTORequest.getPassword().toCharArray(),
+            findCompanyModel.get().getPassword()
+        ).verified;
 
-            getAllCompanyDTOResponse.add(newGetAllCompanyDTOResponse);
-        });
+        if (!validPassword) {
+            throw new EmailOrPasswordInvalidException();
+        }
 
-        return getAllCompanyDTOResponse;
+        String jwt = this.jwtService.generateJwt(findCompanyModel.get().getCompanyId().toString());
+
+        return new SignInDTOResponse(jwt);
     }
 
-    public GetCompanyDTOResponse get(String companyId, String userId) throws CompanyNotFoundException {
-        Optional<UserModel> findUser = this.userRepository.findById(UUID.fromString(userId));
-        
+    public GetCompanyDTOResponse get(String companyId) throws CompanyNotFoundException { 
         Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));
-
-        if (companyModel.isEmpty()) {
-            throw new CompanyNotFoundException();
-        }
-
-        if (!companyModel.get().getUserModel().equals(findUser.get())) {
-            throw new CompanyNotFoundException();
-        }
 
         return new GetCompanyDTOResponse(
             companyModel.get().getCompanyId().toString(),
@@ -102,7 +85,7 @@ public class CompanyService {
         );
     }
 
-    public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest, String companyId, String userId) throws CompanyNotFoundException, InvalidCompanyDomainException {
+    public UpdateCompanyDTOResponse update(UpdateCompanyDTORequest updateCompanyDTORequest, String companyId) throws CompanyNotFoundException, InvalidCompanyDomainException {
         CompanyDomain companyDomain = CompanyDomain.validate(
 			updateCompanyDTORequest.getName(),
 			updateCompanyDTORequest.getDescription(),
@@ -110,44 +93,20 @@ public class CompanyService {
 			updateCompanyDTORequest.getPassword()	
 		);
         
-        Optional<CompanyModel> findCompanyModel = this.companyRepository.findById(UUID.fromString(companyId));
-        
-        if (findCompanyModel.isEmpty()) {
-            throw new CompanyNotFoundException();
-        }
-
-        Optional<UserModel> findUserModel = this.userRepository.findById(UUID.fromString(userId));
-        
-        if (!findCompanyModel.get().getUserModel().equals(findUserModel.get())) {
-            throw new CompanyNotFoundException();
-        }
-
         CompanyModel companyModel = new CompanyModel(
 			UUID.fromString(companyId),
 			companyDomain.getName(),
 			companyDomain.getDescription(),
 			companyDomain.getEmail(),
-			companyDomain.getPassword(),
-			findUserModel.get());
+			companyDomain.getPassword()
+		);
     
         CompanyModel updateCompanyModel = this.companyRepository.save(companyModel);
 
         return new UpdateCompanyDTOResponse(updateCompanyModel.getCompanyId().toString());
     }
 
-    public DeleteCompanyDTOResponse delete(String companyId, String userId) throws CompanyNotFoundException {
-        Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));
-        
-        if (companyModel.isEmpty()) {
-            throw new CompanyNotFoundException();
-        }
-        
-        Optional<UserModel> findUser = this.userRepository.findById(UUID.fromString(userId));
-        
-        if (!companyModel.get().getUserModel().equals(findUser.get())) {
-            throw new CompanyNotFoundException();
-        }
-
+    public DeleteCompanyDTOResponse delete(String companyId) throws CompanyNotFoundException {        
         this.companyRepository.deleteById(UUID.fromString(companyId));
 
         return new DeleteCompanyDTOResponse(companyId);

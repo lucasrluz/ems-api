@@ -16,13 +16,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.emsapi.models.CompanyModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
+import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
+import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -35,8 +36,8 @@ public class RoleApiDeleteTests {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private CompanyRepository companyRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -52,16 +53,14 @@ public class RoleApiDeleteTests {
     @BeforeEach
     @AfterAll
     public void deleteAll() {
-        this.userRepository.deleteAll();
         this.roleRepository.deleteAll();
     }
 
     @Test
     public void retorna200ERoleId() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+ 		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel saveRoleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -82,9 +81,8 @@ public class RoleApiDeleteTests {
     @Test
     public void retorna404EMensagemDeErro_RoleNaoEncontrada_RoleNaoCadastrada() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(

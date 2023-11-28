@@ -1,4 +1,4 @@
-package com.emsapi.integration.api.authentication;
+package com.emsapi.integration.api.company;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,29 +11,30 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+import org.json.JSONObject;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.emsapi.dtos.authentication.SignInDTORequest;
-import com.emsapi.models.UserModel;
-import com.emsapi.repositories.UserRepository;
+import com.emsapi.models.CompanyModel;
+import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.services.JwtService;
+import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.SignInDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class AuthenticationApiSignInTests {
+public class CompanyApiSignInTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private JwtService jwtService;
 
     @Autowired
-    private JwtService jwtService;
+    private CompanyRepository companyRepository;
 
     public String asJsonString(final Object obj) {
         try {
@@ -46,38 +47,39 @@ public class AuthenticationApiSignInTests {
     @BeforeEach
     @AfterAll
     public void deleteAll() {
-        this.userRepository.deleteAll();
+        this.companyRepository.deleteAll();
     }
 
     @Test
     public void retorna201EJWT() throws Exception {
-        // Environment data
-        UserModel userModel = UserModelBuilder.createWithEmptyUserId();
-        UserModel saveUserModel = this.userRepository.save(userModel);
-
         // Test
-        SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
+		CompanyModel companyModel = CompanyModelBuilder.createWithEmptyCompanyId();
+		CompanyModel saveCompanyModel = this.companyRepository.save(companyModel);
+
+		SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/auth/signin")
+            post("/api/company/signin")
             .contentType("application/json")
             .content(asJsonString(signInDTORequest))
         ).andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(201);
 
-        String jwt = new JSONObject(response.getContentAsString()).getString("jwt");
+		String jwt = new JSONObject(response.getContentAsString()).getString("jwt");
 
-        assertThat(this.jwtService.validateJwt(jwt)).isEqualTo(saveUserModel.getUserId().toString());
+		String companyId = this.jwtService.validateJwt(jwt);
+
+        assertThat(companyId).isEqualTo(saveCompanyModel.getCompanyId().toString());
     }
 
     @Test
     public void retorna400EMensagemDeErro_EmailNaoCadastrado() throws Exception {
         // Test
-        SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
+		SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/auth/signin")
+            post("/api/company/signin")
             .contentType("application/json")
             .content(asJsonString(signInDTORequest))
         ).andReturn().getResponse();
@@ -88,16 +90,15 @@ public class AuthenticationApiSignInTests {
 
     @Test
     public void retorna400EMensagemDeErro_PasswordInvalida() throws Exception {
-        // Environment data
-        UserModel userModel = UserModelBuilder.createWithEmptyUserId();
-        this.userRepository.save(userModel);
-
         // Test
-        SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
-        signInDTORequest.setPassword("456");
+		CompanyModel companyModel = CompanyModelBuilder.createWithEmptyCompanyId();
+		this.companyRepository.save(companyModel);
+
+		SignInDTORequest signInDTORequest = SignInDTORequestBuilder.createWithValidData();
+		signInDTORequest.setPassword("456");
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/auth/signin")
+            post("/api/company/signin")
             .contentType("application/json")
             .content(asJsonString(signInDTORequest))
         ).andReturn().getResponse();

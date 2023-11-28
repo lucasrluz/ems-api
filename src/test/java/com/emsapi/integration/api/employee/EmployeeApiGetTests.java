@@ -17,16 +17,13 @@ import java.util.UUID;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONObject;
@@ -40,9 +37,6 @@ public class EmployeeApiGetTests {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -67,17 +61,13 @@ public class EmployeeApiGetTests {
         this.employeeRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
     @Test
     public void retorna200EEmployee() throws Exception {
         // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModel));
+        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId());
+        String jwt = this.jwtService.generateJwt(saveCompanyModel.getCompanyId().toString());
 
         RoleModel saveRoleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -105,54 +95,12 @@ public class EmployeeApiGetTests {
 
         assertThat(responseJSONObject.toString().equals(employeeJSONObject.toString())).isEqualTo(true);
     }
-
-    @Test
-    public void retorna404EMensagemDeErro_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
-        // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-        // Test
-        MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/" + UUID.randomUUID().toString() + "/company/" + UUID.randomUUID().toString())
-            .header("Authorization", "Bearer " + jwt)
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.getContentAsString()).isEqualTo("Company not found");
-    }
-
-    @Test
-    public void retorna404EMensagemDeErro_CompanyNaoEncontrada_UserDaCompanyDiferenteDoInformado() throws Exception {
-        // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-        UserModel userModelForCompany = UserModelBuilder.createWithEmptyUserId();
-        userModelForCompany.setEmail("barfoo@gmail.com");
-        UserModel saveUserModelForCompany = this.userRepository.save(userModelForCompany);
-        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModelForCompany));
-
-        // Test
-        MockHttpServletResponse response = this.mockMvc.perform(
-            get("/api/employee/" + UUID.randomUUID().toString() + "/company/" + saveCompanyModel.getCompanyId().toString())
-            .header("Authorization", "Bearer " + jwt)
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.getContentAsString()).isEqualTo("Company not found");
-    }
     
     @Test
     public void retorna404EMensagemDeErro_EmployeeNaoEncontrada_EmployeeNaoCadastrado() throws Exception {
         // Enviroment data
-        UserModel saveUserModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(saveUserModel.getUserId().toString());
-
-        CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId(saveUserModel));
+		CompanyModel saveCompanyModel = this.companyRepository.save(CompanyModelBuilder.createWithEmptyCompanyId());
+        String jwt = this.jwtService.generateJwt(saveCompanyModel.getCompanyId().toString());
 
         // Test
         MockHttpServletResponse response = this.mockMvc.perform(

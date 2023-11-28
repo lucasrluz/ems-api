@@ -17,7 +17,6 @@ import com.emsapi.dtos.employee.GetEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.services.EmployeeService;
@@ -26,7 +25,6 @@ import com.emsapi.services.util.EmployeeNotFoundException;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
-import com.emsapi.util.UserModelBuilder;
 
 @ExtendWith(SpringExtension.class)
 public class EmployeeServiceGetTests {
@@ -42,8 +40,7 @@ public class EmployeeServiceGetTests {
     @Test
     public void retornaEmployee() throws Exception {
         // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
-        Optional<CompanyModel> companyModelMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModelMock));
+        Optional<CompanyModel> companyModelMock = Optional.of(CompanyModelBuilder.createWithCompanyId());
         BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelMock);
 
         RoleModel roleModelMock = RoleModelBuilder.createWithRoleId();
@@ -53,8 +50,7 @@ public class EmployeeServiceGetTests {
         // Test
         GetEmployeeDTOResponse getEmployeeDTOResponse = this.employeeService.get(
             employeeModelMock.get().getEmployeeId().toString(),
-            companyModelMock.get().getCompanyId().toString(),
-            userModelMock.getUserId().toString() 
+            companyModelMock.get().getCompanyId().toString()
         );
 
         assertThat(getEmployeeDTOResponse.getEmployeeId()).isEqualTo(employeeModelMock.get().getEmployeeId().toString());
@@ -68,43 +64,9 @@ public class EmployeeServiceGetTests {
     }
 
     @Test
-    public void retornaException_CompanyNaoEncontrada_CompanyNaoCadastrada() throws Exception {
-        // Mocks
-        BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
- 
-        // Test
-        assertThatExceptionOfType(CompanyNotFoundException.class)
-        .isThrownBy(() -> this.employeeService.get(
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString()
-        ))
-        .withMessage("Company not found");
-
-    }
-
-    @Test
-    public void retornaException_CompanyNaoEncontrada_UserDaCompanyDiferenteDoInformado() throws Exception {
-        // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
-        Optional<CompanyModel> companyModelMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModelMock));
-        BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelMock);
- 
-        // Test
-        assertThatExceptionOfType(CompanyNotFoundException.class)
-        .isThrownBy(() -> this.employeeService.get(
-            UUID.randomUUID().toString(),
-            companyModelMock.get().getCompanyId().toString(),
-            UUID.randomUUID().toString()
-        ))
-        .withMessage("Company not found");
-    }
-
-    @Test
     public void retornaException_EmployeeNaoEncontrado_EmployeeNaoCadastrado() throws Exception {
         // Mocks
-        UserModel userModelMock = UserModelBuilder.createWithUserId();
-        Optional<CompanyModel> companyModelMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModelMock));
+        Optional<CompanyModel> companyModelMock = Optional.of(CompanyModelBuilder.createWithCompanyId());
         BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelMock);
 
         BDDMockito.when(this.employeeRepository.findById(ArgumentMatchers.any())).thenReturn(Optional.empty());
@@ -113,8 +75,7 @@ public class EmployeeServiceGetTests {
         assertThatExceptionOfType(EmployeeNotFoundException.class)
         .isThrownBy(() -> this.employeeService.get(
             UUID.randomUUID().toString(),
-            companyModelMock.get().getCompanyId().toString(),
-            userModelMock.getUserId().toString()
+            companyModelMock.get().getCompanyId().toString()
         ))
         .withMessage("Employee not found");
     }

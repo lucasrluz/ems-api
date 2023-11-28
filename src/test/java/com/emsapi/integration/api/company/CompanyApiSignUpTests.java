@@ -20,29 +20,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.emsapi.dtos.company.SaveCompanyDTORequest;
 import com.emsapi.models.CompanyModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
-import com.emsapi.repositories.UserRepository;
-import com.emsapi.services.JwtService;
 import com.emsapi.util.SaveCompanyDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CompanyApiSaveTests {
+public class CompanyApiSignUpTests {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private CompanyRepository companyRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     public String asJsonString(final Object obj) {
         try {
@@ -56,22 +46,15 @@ public class CompanyApiSaveTests {
     @AfterAll
     public void deleteAll() {
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
     @Test
     public void retorna201ECompanyId() throws Exception {
-        // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-        
         // Test
         SaveCompanyDTORequest saveCompanyDTORequest = SaveCompanyDTORequestBuilder.createWithValidData();
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/company")
-            .header("Authorization", "Bearer " + jwt)
+            post("/api/company/signup")
             .contentType("application/json")
             .content(asJsonString(saveCompanyDTORequest))
         ).andReturn().getResponse();
@@ -79,27 +62,19 @@ public class CompanyApiSaveTests {
         assertThat(response.getStatus()).isEqualTo(201);
 
         String companyId = new JSONObject(response.getContentAsString()).getString("companyId");
-        Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));
+        Optional<CompanyModel> companyModel = this.companyRepository.findById(UUID.fromString(companyId));	
 
         assertThat(companyModel.isEmpty()).isEqualTo(false);
         assertThat(companyModel.get().getName()).isEqualTo("foo");
         assertThat(companyModel.get().getDescription()).isEqualTo("bar");
-        assertThat(companyModel.get().getUserModel().getUserId()).isEqualTo(userModel.getUserId());
     }
 
     @Test
     public void retorna400EMensagemDeErro_NameInvalido_ValorVazio() throws Exception {
-        // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-        
-        // Test
         SaveCompanyDTORequest saveCompanyDTORequest = SaveCompanyDTORequestBuilder.createWithEmptyName();
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/company")
-            .header("Authorization", "Bearer " + jwt)
+            post("/api/company/signup")
             .contentType("application/json")
             .content(asJsonString(saveCompanyDTORequest))
         ).andReturn().getResponse();
@@ -110,17 +85,10 @@ public class CompanyApiSaveTests {
 
     @Test
     public void retorna400EMensagemDeErro_DescriptionInvalida_ValorVazio() throws Exception {
-        // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-        
-        // Test
         SaveCompanyDTORequest saveCompanyDTORequest = SaveCompanyDTORequestBuilder.createWithEmptyDescription();
 
         MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/company")
-            .header("Authorization", "Bearer " + jwt)
+            post("/api/company/signup")
             .contentType("application/json")
             .content(asJsonString(saveCompanyDTORequest))
         ).andReturn().getResponse();

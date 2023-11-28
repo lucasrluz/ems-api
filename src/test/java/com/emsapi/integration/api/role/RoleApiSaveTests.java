@@ -18,14 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.json.JSONObject;
 
 import com.emsapi.dtos.role.SaveRoleDTORequest;
+import com.emsapi.models.CompanyModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
+import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
+import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
 import com.emsapi.util.SaveRoleDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
@@ -38,8 +38,8 @@ public class RoleApiSaveTests {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private CompanyRepository companyRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -55,16 +55,14 @@ public class RoleApiSaveTests {
     @BeforeEach
     @AfterAll
     public void deleteAll() {
-        this.userRepository.deleteAll();
         this.roleRepository.deleteAll();
     }
 
     @Test
     public void retorna201ERoleId() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         // Test
         SaveRoleDTORequest saveRoleDTORequest = SaveRoleDTORequestBuilder.createWithValidData();
@@ -88,11 +86,10 @@ public class RoleApiSaveTests {
     @Test
     public void retorna400EMensagemDeErro_NameJaCadastrado() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
+		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
         this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         // Test
         SaveRoleDTORequest saveRoleDTORequest = SaveRoleDTORequestBuilder.createWithValidData();
@@ -111,9 +108,8 @@ public class RoleApiSaveTests {
     @Test
     public void retorna400EMensagemDeErro_NameInvalido_ValorVazio() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
+		CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         // Test
         SaveRoleDTORequest saveRoleDTORequest = SaveRoleDTORequestBuilder.createWithEmptyName();

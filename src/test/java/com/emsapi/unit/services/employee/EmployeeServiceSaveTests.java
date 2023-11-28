@@ -18,7 +18,6 @@ import com.emsapi.dtos.employee.SaveEmployeeDTOResponse;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
@@ -29,7 +28,6 @@ import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.EmployeeModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
 import com.emsapi.util.SaveEmployeeDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 
 @ExtendWith(SpringExtension.class)
 public class EmployeeServiceSaveTests {
@@ -51,8 +49,7 @@ public class EmployeeServiceSaveTests {
         Optional<RoleModel> roleModelOptionalMock = Optional.of(RoleModelBuilder.createWithRoleId());
         BDDMockito.when(this.roleRepository.findById(ArgumentMatchers.any())).thenReturn(roleModelOptionalMock);
 
-        UserModel userModel = UserModelBuilder.createWithUserId();
-        Optional<CompanyModel> companyModelOptionalMock = Optional.of(CompanyModelBuilder.createWithCompanyId(userModel));
+        Optional<CompanyModel> companyModelOptionalMock = Optional.of(CompanyModelBuilder.createWithCompanyId());
         BDDMockito.when(this.companyRepository.findById(ArgumentMatchers.any())).thenReturn(companyModelOptionalMock);
 
         EmployeeModel employeeModelMock = EmployeeModelBuilder.createWithEmployeeId(

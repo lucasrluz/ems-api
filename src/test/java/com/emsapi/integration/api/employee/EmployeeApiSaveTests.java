@@ -19,16 +19,13 @@ import com.emsapi.dtos.employee.SaveEmployeeDTORequest;
 import com.emsapi.models.CompanyModel;
 import com.emsapi.models.EmployeeModel;
 import com.emsapi.models.RoleModel;
-import com.emsapi.models.UserModel;
 import com.emsapi.repositories.CompanyRepository;
 import com.emsapi.repositories.EmployeeRepository;
 import com.emsapi.repositories.RoleRepository;
-import com.emsapi.repositories.UserRepository;
 import com.emsapi.services.JwtService;
 import com.emsapi.util.CompanyModelBuilder;
 import com.emsapi.util.RoleModelBuilder;
 import com.emsapi.util.SaveEmployeeDTORequestBuilder;
-import com.emsapi.util.UserModelBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONObject;
@@ -42,9 +39,6 @@ public class EmployeeApiSaveTests {
 
     @Autowired
     private JwtService jwtService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -69,17 +63,13 @@ public class EmployeeApiSaveTests {
         this.employeeRepository.deleteAll();
         this.roleRepository.deleteAll();
         this.companyRepository.deleteAll();
-        this.userRepository.deleteAll();
     }
 
     @Test
     public void retorna201EEmployeeId() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
 
@@ -111,11 +101,8 @@ public class EmployeeApiSaveTests {
     @Test
     public void retorna404EMesagemDeErro_RoleNaoEncontrada_RoleNaoCadastrada() throws Exception {
         // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId(userModel));
+        CompanyModel companyModel = this.companyRepository.save(CompanyModelBuilder.createWithCompanyId());
+        String jwt = this.jwtService.generateJwt(companyModel.getCompanyId().toString());
 
         // Test
         SaveEmployeeDTORequest saveEmployeeDTORequest = SaveEmployeeDTORequestBuilder.createWithValidData(
@@ -132,31 +119,5 @@ public class EmployeeApiSaveTests {
 
         assertThat(response.getStatus()).isEqualTo(404);
         assertThat(response.getContentAsString()).isEqualTo("Role not found");
-    }
-
-    @Test
-    public void retorna404EMensagemDeErro_CompanyNaoEcontrada_CompanyNaoCadastrada() throws Exception {
-        // Environment data
-        UserModel userModel = this.userRepository.save(UserModelBuilder.createWithEmptyUserId());
-
-        String jwt = this.jwtService.generateJwt(userModel.getUserId().toString());
-
-        RoleModel roleModel = this.roleRepository.save(RoleModelBuilder.createWithEmptyRoleId());
-
-        // Test
-        SaveEmployeeDTORequest saveEmployeeDTORequest = SaveEmployeeDTORequestBuilder.createWithValidData(
-            UUID.randomUUID().toString(),
-            roleModel.getRoleId().toString()
-        );
-
-        MockHttpServletResponse response = this.mockMvc.perform(
-            post("/api/employee")
-            .header("Authorization", "Bearer " + jwt)
-            .contentType("application/json")
-            .content(asJsonString(saveEmployeeDTORequest))
-        ).andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(404);
-        assertThat(response.getContentAsString()).isEqualTo("Company not found");
-    }
+    } 
 }
